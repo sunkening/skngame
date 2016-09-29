@@ -27,6 +27,8 @@
 #include <map>
 #include <set>
 using namespace std;
+#include<d3d9.h>
+#include<d3dx9.h>
 #include "d3dUtility.h"
 #include "Camera.h"
 #include<IOSTREAM>
@@ -197,10 +199,10 @@ bool Display(float timeDelta)
 	 
 	Device->SetTransform(D3DTS_WORLD, &w);
  
-	 Device->SetVertexShader(toonshader);
+	// Device->SetVertexShader(toonshader);
 	Teapot->DrawSubset(0); 
 	
- 
+	cout << "dsfdsad" << endl;
 
 	Device->EndScene();
 	Device->Present(0, 0, 0, 0);

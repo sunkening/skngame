@@ -5,7 +5,7 @@
 #include "d3d.h"
 #include <string>
 #include<d3d9.h>
-#include<d3dx>
+#include<d3dx9.h>
 #include "d3dUtility.h"
 #include <iostream>
 using namespace std;
