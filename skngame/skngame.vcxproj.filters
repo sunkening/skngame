@@ -1,0 +1,543 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\ASCFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\BitMapFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\Exception.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G2DPoint.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G2DRigid.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G3DObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G3DPlan.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G3DRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G3DRenderDDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\G3DScene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GameApp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GameAppExample.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GameSceneExample.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GameSceneJX.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GAnimationGroup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GAnimationManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GBackgroundLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GBandle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GBrickLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GCharacter.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GColor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GColorLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GCompareZ.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GConsoleLogger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GCursor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GCylindrical3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GDDraw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GDDrawFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GDDrawRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GDDrawViewPort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GFrame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GGameUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GInput.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\gl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLightAmbient.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLightInfinit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLightLib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLogger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GLoggerPort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMaterial.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMaterialLib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMath.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix1X2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix1X3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix1X4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix2X2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix3X2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix3X3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix4X3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GMatrix4X4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GParamLine2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GParamLine3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GParticle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GParticleEngine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GPolar2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GPoly.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GPolyIndex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GRect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GRenderList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GScene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSceneDefault.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSpherical3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSpirit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSpiritAnimation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSpiritLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GSpiritRole.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GTerrainLayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GTextArea.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GVector2D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GVector3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GVector4D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GViewPort.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\LOG.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\NullPointerException.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\Parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\PLGFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\System.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\g3dlib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="td\GWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="skngame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\ASCFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\BitMapFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\Exception.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G2DPoint.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G2DRigid.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G3DObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G3DPlan.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G3DRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G3DRenderDDraw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\G3DScene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GameApp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GameAppExample.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GameSceneExample.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GameSceneJX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GAnimation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GAnimationGroup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GAnimationManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GBackgroundLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GBandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GBrickLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GCharacter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GColor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GColorLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GCompareZ.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GConsoleLogger.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GCursor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GCylindrical3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GDDraw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GDDrawFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GDDrawRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GDDrawViewPort.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GFrame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GGameUI.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GInput.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\gl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLightAmbient.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLightInfinit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLightLib.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLogger.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GLoggerPort.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMaterial.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMaterialLib.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix1X2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix1X3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix1X4.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix2X2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix3X2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix3X3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix4X3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GMatrix4X4.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GParamLine2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GParamLine3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GParticle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GParticleEngine.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GPolar2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GPoly.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GPolyIndex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GRect.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GRender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GRenderList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GScene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSceneDefault.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSpherical3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSpirit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSpiritAnimation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSpiritLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GSpiritRole.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GTerrainLayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GTextArea.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GVector2D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GVector3D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GVector4D.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GViewPort.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\LOG.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\NullPointerException.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\Parser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\PLGFile.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\System.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="td\GWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

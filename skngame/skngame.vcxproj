@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D34E3027-6544-42A3-A897-7BD3AC518866}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>skngame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ddraw.lib;dinput8.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="td\ASCFile.h" />
+    <ClInclude Include="td\BitMapFile.h" />
+    <ClInclude Include="td\Exception.h" />
+    <ClInclude Include="td\G2DPoint.h" />
+    <ClInclude Include="td\G2DRigid.h" />
+    <ClInclude Include="td\g3dlib.h" />
+    <ClInclude Include="td\G3DObject.h" />
+    <ClInclude Include="td\G3DPlan.h" />
+    <ClInclude Include="td\G3DRender.h" />
+    <ClInclude Include="td\G3DRenderDDraw.h" />
+    <ClInclude Include="td\G3DScene.h" />
+    <ClInclude Include="td\GameApp.h" />
+    <ClInclude Include="td\GameAppExample.h" />
+    <ClInclude Include="td\GameSceneExample.h" />
+    <ClInclude Include="td\GameSceneJX.h" />
+    <ClInclude Include="td\GAnimation.h" />
+    <ClInclude Include="td\GAnimationGroup.h" />
+    <ClInclude Include="td\GAnimationManager.h" />
+    <ClInclude Include="td\GBackgroundLayer.h" />
+    <ClInclude Include="td\GBandle.h" />
+    <ClInclude Include="td\GBrickLayer.h" />
+    <ClInclude Include="td\GCamera.h" />
+    <ClInclude Include="td\GCharacter.h" />
+    <ClInclude Include="td\GColor.h" />
+    <ClInclude Include="td\GColorLayer.h" />
+    <ClInclude Include="td\GCompareZ.h" />
+    <ClInclude Include="td\GConsoleLogger.h" />
+    <ClInclude Include="td\GCursor.h" />
+    <ClInclude Include="td\GCylindrical3D.h" />
+    <ClInclude Include="td\GDDraw.h" />
+    <ClInclude Include="td\GDDrawFrame.h" />
+    <ClInclude Include="td\GDDrawRender.h" />
+    <ClInclude Include="td\GDDrawViewPort.h" />
+    <ClInclude Include="td\GFrame.h" />
+    <ClInclude Include="td\GGameUI.h" />
+    <ClInclude Include="td\GInput.h" />
+    <ClInclude Include="td\gl.h" />
+    <ClInclude Include="td\GLayer.h" />
+    <ClInclude Include="td\GLight.h" />
+    <ClInclude Include="td\GLightAmbient.h" />
+    <ClInclude Include="td\GLightInfinit.h" />
+    <ClInclude Include="td\GLightLib.h" />
+    <ClInclude Include="td\GLogger.h" />
+    <ClInclude Include="td\GLoggerPort.h" />
+    <ClInclude Include="td\GMaterial.h" />
+    <ClInclude Include="td\GMaterialLib.h" />
+    <ClInclude Include="td\GMath.h" />
+    <ClInclude Include="td\GMatrix1X2.h" />
+    <ClInclude Include="td\GMatrix1X3.h" />
+    <ClInclude Include="td\GMatrix1X4.h" />
+    <ClInclude Include="td\GMatrix2X2.h" />
+    <ClInclude Include="td\GMatrix3X2.h" />
+    <ClInclude Include="td\GMatrix3X3.h" />
+    <ClInclude Include="td\GMatrix4X3.h" />
+    <ClInclude Include="td\GMatrix4X4.h" />
+    <ClInclude Include="td\GObject.h" />
+    <ClInclude Include="td\GParamLine2D.h" />
+    <ClInclude Include="td\GParamLine3D.h" />
+    <ClInclude Include="td\GParticle.h" />
+    <ClInclude Include="td\GParticleEngine.h" />
+    <ClInclude Include="td\GPolar2D.h" />
+    <ClInclude Include="td\GPoly.h" />
+    <ClInclude Include="td\GPolyIndex.h" />
+    <ClInclude Include="td\GRect.h" />
+    <ClInclude Include="td\GRender.h" />
+    <ClInclude Include="td\GRenderList.h" />
+    <ClInclude Include="td\GScene.h" />
+    <ClInclude Include="td\GSceneDefault.h" />
+    <ClInclude Include="td\GSpherical3D.h" />
+    <ClInclude Include="td\GSpirit.h" />
+    <ClInclude Include="td\GSpiritAnimation.h" />
+    <ClInclude Include="td\GSpiritLayer.h" />
+    <ClInclude Include="td\GSpiritRole.h" />
+    <ClInclude Include="td\GTerrainLayer.h" />
+    <ClInclude Include="td\GTextArea.h" />
+    <ClInclude Include="td\GVector2D.h" />
+    <ClInclude Include="td\GVector3D.h" />
+    <ClInclude Include="td\GVector4D.h" />
+    <ClInclude Include="td\GViewPort.h" />
+    <ClInclude Include="td\GWindow.h" />
+    <ClInclude Include="td\LOG.h" />
+    <ClInclude Include="td\NullPointerException.h" />
+    <ClInclude Include="td\Parser.h" />
+    <ClInclude Include="td\PLGFile.h" />
+    <ClInclude Include="td\System.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="skngame.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="td\ASCFile.cpp" />
+    <ClCompile Include="td\BitMapFile.cpp" />
+    <ClCompile Include="td\Exception.cpp" />
+    <ClCompile Include="td\G2DPoint.cpp" />
+    <ClCompile Include="td\G2DRigid.cpp" />
+    <ClCompile Include="td\G3DObject.cpp" />
+    <ClCompile Include="td\G3DPlan.cpp" />
+    <ClCompile Include="td\G3DRender.cpp" />
+    <ClCompile Include="td\G3DRenderDDraw.cpp" />
+    <ClCompile Include="td\G3DScene.cpp" />
+    <ClCompile Include="td\GameApp.cpp" />
+    <ClCompile Include="td\GameAppExample.cpp" />
+    <ClCompile Include="td\GameSceneExample.cpp" />
+    <ClCompile Include="td\GameSceneJX.cpp" />
+    <ClCompile Include="td\GAnimation.cpp" />
+    <ClCompile Include="td\GAnimationGroup.cpp" />
+    <ClCompile Include="td\GAnimationManager.cpp" />
+    <ClCompile Include="td\GBackgroundLayer.cpp" />
+    <ClCompile Include="td\GBandle.cpp" />
+    <ClCompile Include="td\GBrickLayer.cpp" />
+    <ClCompile Include="td\GCamera.cpp" />
+    <ClCompile Include="td\GCharacter.cpp" />
+    <ClCompile Include="td\GColor.cpp" />
+    <ClCompile Include="td\GColorLayer.cpp" />
+    <ClCompile Include="td\GCompareZ.cpp" />
+    <ClCompile Include="td\GConsoleLogger.cpp" />
+    <ClCompile Include="td\GCursor.cpp" />
+    <ClCompile Include="td\GCylindrical3D.cpp" />
+    <ClCompile Include="td\GDDraw.cpp" />
+    <ClCompile Include="td\GDDrawFrame.cpp" />
+    <ClCompile Include="td\GDDrawRender.cpp" />
+    <ClCompile Include="td\GDDrawViewPort.cpp" />
+    <ClCompile Include="td\GFrame.cpp" />
+    <ClCompile Include="td\GGameUI.cpp" />
+    <ClCompile Include="td\GInput.cpp" />
+    <ClCompile Include="td\gl.cpp" />
+    <ClCompile Include="td\GLayer.cpp" />
+    <ClCompile Include="td\GLight.cpp" />
+    <ClCompile Include="td\GLightAmbient.cpp" />
+    <ClCompile Include="td\GLightInfinit.cpp" />
+    <ClCompile Include="td\GLightLib.cpp" />
+    <ClCompile Include="td\GLogger.cpp" />
+    <ClCompile Include="td\GLoggerPort.cpp" />
+    <ClCompile Include="td\GMaterial.cpp" />
+    <ClCompile Include="td\GMaterialLib.cpp" />
+    <ClCompile Include="td\GMath.cpp" />
+    <ClCompile Include="td\GMatrix1X2.cpp" />
+    <ClCompile Include="td\GMatrix1X3.cpp" />
+    <ClCompile Include="td\GMatrix1X4.cpp" />
+    <ClCompile Include="td\GMatrix2X2.cpp" />
+    <ClCompile Include="td\GMatrix3X2.cpp" />
+    <ClCompile Include="td\GMatrix3X3.cpp" />
+    <ClCompile Include="td\GMatrix4X3.cpp" />
+    <ClCompile Include="td\GMatrix4X4.cpp" />
+    <ClCompile Include="td\GObject.cpp" />
+    <ClCompile Include="td\GParamLine2D.cpp" />
+    <ClCompile Include="td\GParamLine3D.cpp" />
+    <ClCompile Include="td\GParticle.cpp" />
+    <ClCompile Include="td\GParticleEngine.cpp" />
+    <ClCompile Include="td\GPolar2D.cpp" />
+    <ClCompile Include="td\GPoly.cpp" />
+    <ClCompile Include="td\GPolyIndex.cpp" />
+    <ClCompile Include="td\GRect.cpp" />
+    <ClCompile Include="td\GRender.cpp" />
+    <ClCompile Include="td\GRenderList.cpp" />
+    <ClCompile Include="td\GScene.cpp" />
+    <ClCompile Include="td\GSceneDefault.cpp" />
+    <ClCompile Include="td\GSpherical3D.cpp" />
+    <ClCompile Include="td\GSpirit.cpp" />
+    <ClCompile Include="td\GSpiritAnimation.cpp" />
+    <ClCompile Include="td\GSpiritLayer.cpp" />
+    <ClCompile Include="td\GSpiritRole.cpp" />
+    <ClCompile Include="td\GTerrainLayer.cpp" />
+    <ClCompile Include="td\GTextArea.cpp" />
+    <ClCompile Include="td\GVector2D.cpp" />
+    <ClCompile Include="td\GVector3D.cpp" />
+    <ClCompile Include="td\GVector4D.cpp" />
+    <ClCompile Include="td\GViewPort.cpp" />
+    <ClCompile Include="td\GWindow.cpp" />
+    <ClCompile Include="td\LOG.cpp" />
+    <ClCompile Include="td\NullPointerException.cpp" />
+    <ClCompile Include="td\Parser.cpp" />
+    <ClCompile Include="td\PLGFile.cpp" />
+    <ClCompile Include="td\System.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
