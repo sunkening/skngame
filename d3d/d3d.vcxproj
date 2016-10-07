@@ -82,18 +82,22 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3d.h" />
+    <ClInclude Include="D3DUtil.h" />
     <ClInclude Include="d3dUtility.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="GameMain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="d3d.cpp" />
+    <ClCompile Include="D3DUtil.cpp" />
     <ClCompile Include="d3dUtility.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GameMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

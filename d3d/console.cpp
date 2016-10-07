@@ -1,9 +1,10 @@
 // skngame.cpp : 定义控制台应用程序的入口点。
 /////
+#include "stdafx.h"
 #define WIN32_LEAN_AND_MEAN  // just say no to MFC
 
 #define INITGUID
-#include "stdafx.h"
+
 #include <stdio.h>
 #include <windows.h>   // include important windows stuff
 #include <windowsx.h> 
@@ -29,11 +30,16 @@
 using namespace std;
 #include<d3d9.h>
 #include<d3dx9.h>
+#include<IOSTREAM>
+#include "GameMain.h"
+#include "D3DUtil.h"
 #include "d3dUtility.h"
 #include "Camera.h"
-#include<IOSTREAM>
-using namespace std;
+
+
+
 using namespace skn_d3d;
+//using namespace   sknd3d;
 IDirect3DDevice9* Device = 0; 
 IDirect3DVertexBuffer9* VB = 0;
 IDirect3DVertexBuffer9* mirror=0;
@@ -220,21 +226,22 @@ int _tmain(int ac,char *av[])
 	HINSTANCE inst;
 	inst=(HINSTANCE)GetModuleHandle(NULL);
 	//_tWinMain(inst, 0,0, SW_SHOWNORMAL);
-
-
-	
-	if(!d3d::InitD3D(inst,
+	GameMain gamemain;
+	 D3DUtil d3dutil;
+	 d3dutil.gameMan = &gamemain;
+	if (!d3dutil.InitD3D(inst,
 		Width, Height, true, D3DDEVTYPE_HAL, &Device))
 	{
 		::MessageBox(0, _T("InitD3D() - FAILED"), 0, 0);
 		return 0;
 	}
-	Setup();
-	d3d::EnterMsgLoop( Display );
+	d3dutil.EnterMsgLoop();
+//	Setup();
+	//d3d::EnterMsgLoop( Display );
 
-	Cleanup();
+//	Cleanup();
 
-	Device->Release();
+	//Device->Release();
 	return 1;
 
 
