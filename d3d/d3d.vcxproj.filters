@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\NewFilter1">
+      <UniqueIdentifier>{ab86c397-2e95-4120-a746-15b82573d164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\NewFilter1">
+      <UniqueIdentifier>{ef5dc9da-f833-417c-bde3-df29f0f94547}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -36,6 +42,9 @@
     <ClInclude Include="GameMain.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="test\GameTest1.h">
+      <Filter>头文件\NewFilter1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -58,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="GameMain.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test\GameTest1.cpp">
+      <Filter>源文件\NewFilter1</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
