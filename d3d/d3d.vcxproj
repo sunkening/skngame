@@ -86,6 +86,7 @@
     <ClInclude Include="d3dUtility.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="GameMain.h" />
+    <ClInclude Include="test\GameTest1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
@@ -98,6 +99,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="test\GameTest1.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

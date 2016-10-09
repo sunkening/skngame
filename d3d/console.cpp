@@ -31,8 +31,9 @@ using namespace std;
 #include<d3d9.h>
 #include<d3dx9.h>
 #include<IOSTREAM>
-#include "GameMain.h"
 #include "D3DUtil.h"
+#include "GameMain.h"
+#include "test/GameTest1.h"
 #include "d3dUtility.h"
 #include "Camera.h"
 
@@ -59,28 +60,7 @@ D3DXHANDLE ViewProjMatrixHandle = 0;
 D3DXMATRIX   proj ;
 ID3DXConstantTable* shadertable =0;
 IDirect3DVertexShader9* toonshader = 0;
-struct Vertex
-{
-	Vertex(){}
-	Vertex(float x, float y, float z )
-	{
-		_x  = x;  _y  = y;	_z  = z;
-	}
-	Vertex(float x, float y, float z, float nx, float ny, float nz)
-	{
-		_x  = x;  _y  = y;	_z  = z;
-		_nx = nx; _ny = ny; _nz = nz;
-	}
-	void setTex(float u,float v){
-		_u=u;
-		_v=v;
-	};
-	float _x, _y, _z;
-	float _nx, _ny, _nz;
-	float _u,_v;
-	static const DWORD FVF;
-};
-const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL |D3DFVF_TEX1;
+
 D3DXMATRIX WorldMatrix;
 IDirect3DTexture9* tex[4]={0};
 IDirect3DVertexBuffer9* Triangle = 0;
@@ -226,16 +206,16 @@ int _tmain(int ac,char *av[])
 	HINSTANCE inst;
 	inst=(HINSTANCE)GetModuleHandle(NULL);
 	//_tWinMain(inst, 0,0, SW_SHOWNORMAL);
-	GameMain gamemain;
+	GameMain *gamemain=new GameTest1;
 	 D3DUtil d3dutil;
-	 d3dutil.gameMan = &gamemain;
+	 gamemain->setD3DUtil(&d3dutil);
 	if (!d3dutil.InitD3D(inst,
-		Width, Height, true, D3DDEVTYPE_HAL, &Device))
+		Width, Height, true, D3DDEVTYPE_HAL))
 	{
 		::MessageBox(0, _T("InitD3D() - FAILED"), 0, 0);
 		return 0;
 	}
-	d3dutil.EnterMsgLoop();
+	GameMain::EnterMsgLoop(gamemain);
 //	Setup();
 	//d3d::EnterMsgLoop( Display );
 

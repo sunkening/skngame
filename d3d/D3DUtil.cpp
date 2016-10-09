@@ -8,10 +8,16 @@
 using namespace std;
 #include "D3DUtil.h"
 namespace skn_d3d {
-
+	const D3DXCOLOR   D3DUtil::WHITE = D3DCOLOR_XRGB(255, 255, 255);
+	const D3DXCOLOR   D3DUtil::BLACK = D3DCOLOR_XRGB(0, 0, 0);
+	const D3DXCOLOR   D3DUtil::RED = D3DCOLOR_XRGB(255, 0, 0);
+	const D3DXCOLOR   D3DUtil::GREEN = D3DCOLOR_XRGB(0, 255, 0);
+	const D3DXCOLOR   D3DUtil::BLUE = D3DCOLOR_XRGB(0, 0, 255);
+	const D3DXCOLOR   D3DUtil::YELLOW = D3DCOLOR_XRGB(255, 255, 0);
+	const D3DXCOLOR   D3DUtil::CYAN = D3DCOLOR_XRGB(0, 255, 255);
+	const D3DXCOLOR   D3DUtil::MAGENTA = D3DCOLOR_XRGB(255, 0, 255);
 	D3DUtil::D3DUtil()
 	{
-		display = 0;
 	}
 
 bool D3DUtil::InitD3D(
@@ -154,28 +160,6 @@ bool D3DUtil::InitD3D(
 		return ::DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
-	int D3DUtil::EnterMsgLoop( )
-	{
-		MSG msg;
-		::ZeroMemory(&msg, sizeof(MSG));
-
-		static float lastTime = (float)timeGetTime();
-
-		while (msg.message != WM_QUIT)
-		{
-			if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessage(&msg);
-			}
-			else
-			{
-				float currTime = (float)timeGetTime();
-				float timeDelta = (currTime - lastTime)*0.001f;
-				display(timeDelta);
-				lastTime = currTime;
-			}
-		}
-		return msg.wParam;
-	}
+	//const DWORD Vertex::FVF = D3DFVF_XYZ|D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1;
+	const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE  ;
 }
