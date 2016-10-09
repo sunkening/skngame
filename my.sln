@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "skngame", "skngame\skngame.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "d3d", "d3d\d3d.vcxproj", "{429B7816-E0B3-4464-9FE3-5A819D9B15B6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GDI", "GDI\GDI.vcxproj", "{C9897613-B752-4395-B6C6-65774C78F854}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -53,6 +55,16 @@ Global
 		{429B7816-E0B3-4464-9FE3-5A819D9B15B6}.Release|Win32.ActiveCfg = Release|Win32
 		{429B7816-E0B3-4464-9FE3-5A819D9B15B6}.Release|Win32.Build.0 = Release|Win32
 		{429B7816-E0B3-4464-9FE3-5A819D9B15B6}.Release|x64.ActiveCfg = Release|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Debug|ARM.ActiveCfg = Debug|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Debug|Win32.Build.0 = Debug|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Debug|x64.ActiveCfg = Debug|x64
+		{C9897613-B752-4395-B6C6-65774C78F854}.Debug|x64.Build.0 = Debug|x64
+		{C9897613-B752-4395-B6C6-65774C78F854}.Release|ARM.ActiveCfg = Release|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Release|Win32.ActiveCfg = Release|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Release|Win32.Build.0 = Release|Win32
+		{C9897613-B752-4395-B6C6-65774C78F854}.Release|x64.ActiveCfg = Release|x64
+		{C9897613-B752-4395-B6C6-65774C78F854}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
