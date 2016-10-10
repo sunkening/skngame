@@ -8,7 +8,7 @@ using namespace std;
 #define GRAPH_EDGE_MARKED 1
 #define GRAPH_EDGE_UNMARKED 0
 #define  GRAPH_EDGE_DIRECTED 1 //定向边
-#define  GRAPH_EDGE_UNDIRECTED 1 //非定向边
+#define  GRAPH_EDGE_UNDIRECTED 0 //非定向边
 namespace skn
 {
 
