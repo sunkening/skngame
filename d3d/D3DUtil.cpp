@@ -16,6 +16,82 @@ namespace skn_d3d {
 	const D3DXCOLOR   D3DUtil::YELLOW = D3DCOLOR_XRGB(255, 255, 0);
 	const D3DXCOLOR   D3DUtil::CYAN = D3DCOLOR_XRGB(0, 255, 255);
 	const D3DXCOLOR   D3DUtil::MAGENTA = D3DCOLOR_XRGB(255, 0, 255);
+	//计算面的法线，定点为顺时针环绕
+	void D3DUtil::ComputeNormal(D3DXVECTOR3 *p0, D3DXVECTOR3 *p1, D3DXVECTOR3 *p2, D3DXVECTOR3 *out)
+	{
+		D3DXVECTOR3 u = *p1 - *p0;
+		D3DXVECTOR3 v = *p2 - *p0;
+		D3DXVec3Cross(out, &u, &v);
+		D3DXVec3Normalize(out, out);
+	}
+
+	D3DLIGHT9 D3DUtil::InitDirectionLight(D3DXVECTOR3 d, D3DXCOLOR color)
+	{
+		D3DLIGHT9 light;
+		ZeroMemory(&light,sizeof D3DLIGHT9);
+		light.Type = D3DLIGHT_DIRECTIONAL;
+		light.Ambient = color*0.4f;
+		light.Diffuse = color;
+		light.Specular = color*0.6f;
+		light.Direction = d;
+		return light;
+	}
+
+	D3DLIGHT9 D3DUtil::InitPointLight(D3DXVECTOR3 position, D3DXCOLOR color)
+	{
+		D3DLIGHT9 light;
+		ZeroMemory(&light, sizeof D3DLIGHT9);
+		light.Type = D3DLIGHT_POINT;
+		light.Ambient = color * 0.3f;
+		light.Diffuse = color;
+		light.Specular = color * 0.9f;
+		light.Position = position;
+		light.Range = 1000.0f;
+		light.Falloff = 1.0f;
+		light.Attenuation0 = 1.0f;
+		light.Attenuation1 = 1.0f;
+		light.Attenuation2 = 0.0f;
+		return light;
+	}
+
+	D3DMATERIAL9 D3DUtil::InitMaterial(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e, float p /*= 0.0f*/)
+	{
+		D3DMATERIAL9 m;
+		ZeroMemory(&m,sizeof D3DMATERIAL9);
+		m.Ambient = a;
+		m.Diffuse = d;
+		m.Emissive = e;
+		m.Specular = s;
+		m.Power = p;
+		return m;
+	}
+
+	D3DMATERIAL9 D3DUtil::InitMaterial(D3DCOLOR c, float ambient, float s, float e)
+	{
+		D3DMATERIAL9 m;
+		ZeroMemory(&m, sizeof D3DMATERIAL9);
+		byte *b=(byte*) &c;
+		int alph = b[3];
+		int red = b[2];
+		int green = b[1];
+		int blue = b[0];
+ 
+		D3DXCOLOR a(red/255, green/255, blue/255, alph/255);
+		m.Ambient = a*ambient;
+		m.Diffuse = a;
+		m.Emissive = a*e;
+		m.Specular = a*s;
+		m.Power = 5.0f;
+		return m;
+	}
+
+	IDirect3DTexture9* D3DUtil::LoadTexture(TCHAR * filename)
+	{
+		IDirect3DTexture9* t;
+		D3DXCreateTextureFromFile(device,filename,&t);
+		return t;
+	}
+
 	D3DUtil::D3DUtil()
 	{
 	}
@@ -160,6 +236,8 @@ bool D3DUtil::InitD3D(
 		return ::DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
-	//const DWORD Vertex::FVF = D3DFVF_XYZ|D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1;
-	const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE  ;
+	const DWORD Vertex::FVF = D3DFVF_XYZ |  D3DFVF_NORMAL | D3DFVF_TEX1 ;
+	//D3DFVF_DIFFUSE不能和D3DFVF_NORMAL等其他一起使用，否则颜色会不正常，为何？
+	//const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1;D3DFVF_DIFFUSE
+	const DWORD ColorVertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE  ;
 }
