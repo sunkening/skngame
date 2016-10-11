@@ -28,3 +28,17 @@ public:
 	IDirect3DIndexBuffer9* indexBuffer;
 	virtual void play(float timeDelta) override;
 };
+
+//mesh
+class GameTest4 :public skn_d3d::GameMain
+{
+
+public:
+	ID3DXMesh* mesh;
+	IDirect3DTexture9 *textures[2];
+	static const int numSub;
+	virtual bool setup() override;
+	//IDirect3DVertexBuffer9 *vertexBuffer;
+	//IDirect3DIndexBuffer9* indexBuffer;
+	virtual void play(float timeDelta) override;
+};

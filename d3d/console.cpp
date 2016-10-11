@@ -208,7 +208,7 @@ int _tmain(int ac,char *av[])
 	HINSTANCE inst;
 	inst=(HINSTANCE)GetModuleHandle(NULL);
 	//_tWinMain(inst, 0,0, SW_SHOWNORMAL);
-	GameMain *gamemain=new GameTest3;
+	GameMain *gamemain=new GameTest4;
 	 D3DUtil d3dutil;
 	 gamemain->setD3DUtil(&d3dutil);
 	if (!d3dutil.InitD3D(inst,
