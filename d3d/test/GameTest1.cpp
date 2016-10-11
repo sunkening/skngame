@@ -364,11 +364,11 @@ bool GameTest4::setup()
 	D3DXMatrixLookAtLH(&view, &positon, &target, &up);
 	device->SetTransform(D3DTS_VIEW, &view);
 
-	D3DMATERIAL9 material = D3DUtil::InitMaterial(D3DUtil::WHITE, 0.3f, 1);
+	D3DMATERIAL9 material = D3DUtil::InitMaterial(D3DUtil::WHITE, 0.5f, 1);
 	material.Diffuse.a = 0.5f;
 	device->SetMaterial(&material);
-	IDirect3DTexture9 *texture = d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
-	device->SetTexture(0, texture);
+	textures[0]=d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
+	textures[1] = d3dUtil->LoadTexture(TEXT("res/texture/wall2.png"));
 	D3DXVECTOR3 lightdirecton(-1, 0, 0);
 	D3DXVECTOR3 lightPosition(5, 0, 0);
 	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
@@ -409,8 +409,12 @@ void GameTest4::play(float timeDelta)
 	device->SetTransform(D3DTS_WORLD, &(ry*positon));
 
 	device->BeginScene();
-	mesh->DrawSubset(0);
-
+	for (int i=0;i<2;i++)
+	{
+		device->SetTexture(0,textures[i]);
+			mesh->DrawSubset(i);
+	}
+	
 	device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
  
 	device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
