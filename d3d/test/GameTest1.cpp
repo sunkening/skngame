@@ -383,12 +383,11 @@ bool GameTest4::setup()
 	device->SetRenderState(D3DRS_SPECULARENABLE, true);
 	// use alpha in material's diffuse component for alpha
 	//	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);//透明度来源
 	device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-	//device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
 	// set blending factors so that alpha component determines transparency
-	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);//混合因子
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);//混合因子
 	return true;
 }
 
@@ -414,9 +413,17 @@ void GameTest4::play(float timeDelta)
 		device->SetTexture(0,textures[i]);
 			mesh->DrawSubset(i);
 	}
-	
-	device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
- 
+	D3DXMatrixTranslation(&positon2, 1, 0, -1);
+	device->SetTransform(D3DTS_WORLD, &(ry*positon*positon2));
+	for (int i = 0; i < 2; i++)
+	{
+		if (i == 1)
+		{
+			device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+		}
+		device->SetTexture(0, textures[i]);
+		mesh->DrawSubset(i);
+	}
 	device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
