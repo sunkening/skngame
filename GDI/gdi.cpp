@@ -123,6 +123,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		PlaySound(TEXT("hellowin.wav"), NULL, SND_FILENAME | SND_ASYNC);
 		SetTimer(hwnd,1,15,0);
+		/*int cxChar = LOWORD(GetDialogBaseUnits());
+		int cyChar = HIWORD(GetDialogBaseUnits());*/
+		CreateWindow(TEXT("button"), TEXT("PUSHBUTTON"),
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 100, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
+		);
+		return 0;
+	case WM_COMMAND:
+
+
 		return 0;
 	case WM_TIMER:
 		//InvalidateRect(hwnd, NULL, TRUE);
@@ -149,14 +158,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(hwnd,hdc);
 		return 0;
 	case   WM_PAINT:
-		ValidateRect(hwnd, NULL);
+		//ValidateRect(hwnd, NULL);
 		 
-		/*hdc = BeginPaint(hwnd, &ps);
+		 hdc = BeginPaint(hwnd, &ps);
 		GetClientRect(hwnd, &rect);
 		DrawText(hdc, TEXT("Hello, Windows 98!"), -1, &rect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 		
-		EndPaint(hwnd, &ps);*/
+		EndPaint(hwnd, &ps); 
 		return 0;
 	case   WM_DESTROY:
 		PostQuitMessage(0);
