@@ -106,12 +106,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int  cxClient, cyClient;
 	static int num=0;
 	int         i;
+	static TCHAR c[2] = {0,0};
 	POINT       apt[NUM];
 	HDC                   hdc;
 	PAINTSTRUCT ps;
 	RECT          rect;
 	switch (message)
 	{
+	case WM_CHAR:
+		c[0]= (TCHAR)wParam  ;
+		return 0;
 	case   WM_SIZE:
 		cxClient = LOWORD(lParam);
 		cyClient = HIWORD(lParam);
@@ -124,7 +128,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//InvalidateRect(hwnd, NULL, TRUE);
 
 		hdc = GetDC(hwnd);
-		 
+		GetClientRect(hwnd, &rect);
+		DrawText(hdc, c, -1, &rect,
+			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 		//MoveToEx(hdc, 0, cyClient / 2, NULL);
 		//LineTo(hdc, cxClient, cyClient / 2);
 		num++;
