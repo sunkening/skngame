@@ -131,7 +131,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_COMMAND:
 
-
+		MessageBox(hwnd,TEXT(""),TEXT(""),0);
 		return 0;
 	case WM_TIMER:
 		//InvalidateRect(hwnd, NULL, TRUE);
