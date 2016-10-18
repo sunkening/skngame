@@ -1,10 +1,6 @@
 #include <windows.h>
-#include <math.h>
-#include <string>
-#include<list>
-#include <tchar.h>   
-#include <stdio.h>  
-#include "LogWindow.h"
+#include "sknwindow.h"
+using namespace skn_window;
 #define NUM 100
 
 #define TWOPI      (2 * 3.14159)
@@ -96,7 +92,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static LogWindow * logwindow = 0;
 	int         i;
 	SCROLLINFO  si;
-
+	static int logIndex=65;
 	POINT       apt[NUM];
 	HDC                   hdc;
 	PAINTSTRUCT ps;
@@ -125,7 +121,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		);
 		
 		logwindow =LogWindow::Create(hwnd,0);
-		MoveWindow(logwindow->hwnd, 0, 0, 500, 300, false);
+		MoveWindow(logwindow->hwnd, 0, 0, 500, 100, false);
 
 		hdc = GetDC(hwnd);
 		TEXTMETRIC tm;
@@ -135,10 +131,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(hwnd, hdc);
 		 
 		return 0;
-	case WM_COMMAND:
-		logwindow->Log(TEXT("但是nihaoldkfjaldkjf"));
-		
+	case WM_COMMAND: {
+		TSTRING s = TEXT("但是");
+		s.append(1,(TCHAR)logIndex);
+		logwindow->Log(s);
+		logIndex++;
 		return 0;
+	}
+			
 	case WM_VSCROLL:
 		si.cbSize = sizeof(si);
 		si.fMask = SIF_ALL;
@@ -168,9 +168,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_TIMER:
 		//InvalidateRect(hwnd, NULL, TRUE);
-
 		hdc = GetDC(hwnd);
-		 
 		//MoveToEx(hdc, 0, cyClient / 2, NULL);
 		//LineTo(hdc, cxClient, cyClient / 2);
 		num++;
@@ -195,13 +193,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hwnd, &rect);
 		DrawText(hdc, TEXT("Hello, Windows 98!"), -1, &rect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		int  iLength;
-		TCHAR szBuffer[40];
-			iLength = wsprintf(szBuffer, TEXT("WWWWWWW %iii%iiisi%iiii"),
-				4, 5, 9);
-
-		TextOut(hdc, 10, 10, szBuffer, iLength);
-		TextOut(hdc, 10+ iLength*cxChar, 10 , szBuffer, iLength);
+		 
 		EndPaint(hwnd, &ps); 
 		return 0;
 	case   WM_DESTROY:
