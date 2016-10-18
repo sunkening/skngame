@@ -91,14 +91,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int num=0, iVertPos =0;
 	static LogWindow * logwindow = 0;
 	int         i;
+
+	static TCHAR c[2] = {0,0};
+
 	SCROLLINFO  si;
 	static int logIndex=65;
+
 	POINT       apt[NUM];
 	HDC                   hdc;
 	PAINTSTRUCT ps;
 	RECT          rect;
 	switch (message)
 	{
+	case WM_CHAR:
+		c[0]= (TCHAR)wParam  ;
+		return 0;
 	case   WM_SIZE:
 		cxClient = LOWORD(lParam);
 		cyClient = HIWORD(lParam);
@@ -119,18 +126,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateWindow(TEXT("button"), TEXT("PUSHBUTTON"),
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 500, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
 		);
-		
-		logwindow =LogWindow::Create(hwnd,0);
-		MoveWindow(logwindow->hwnd, 0, 0, 500, 100, false);
 
-		hdc = GetDC(hwnd);
-		TEXTMETRIC tm;
-		GetTextMetrics(hdc, &tm);
-		cxChar = tm.tmAveCharWidth;
-		cyChar = tm.tmHeight + tm.tmExternalLeading;
-		ReleaseDC(hwnd, hdc);
-		 
 		return 0;
+
 	case WM_COMMAND: {
 		TSTRING s = TEXT("µ«ÊÇ");
 		s.append(1,(TCHAR)logIndex);
@@ -165,10 +163,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				NULL, NULL);
 			UpdateWindow(hwnd);
 		}
+
 		return 0;
 	case WM_TIMER:
 		//InvalidateRect(hwnd, NULL, TRUE);
 		hdc = GetDC(hwnd);
+
+		GetClientRect(hwnd, &rect);
+		DrawText(hdc, c, -1, &rect,
+			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+
 		//MoveToEx(hdc, 0, cyClient / 2, NULL);
 		//LineTo(hdc, cxClient, cyClient / 2);
 		num++;
