@@ -1,6 +1,6 @@
 #include <windows.h>
-#include <math.h>
-
+#include "sknwindow.h"
+using namespace skn_window;
 #define NUM 100
 
 #define TWOPI      (2 * 3.14159)
@@ -9,40 +9,23 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-
 	PSTR szCmdLine, int iCmdShow)
-
 {
-
+	LogWindow::Init(hInstance);
 	static TCHAR szAppName[] = TEXT("HelloWin");
-
 	HWND   hwnd;
-
 	MSG    msg;
-
 	WNDCLASS wndclass;
-
-
 	wndclass.style = CS_HREDRAW | CS_VREDRAW;
-
 	wndclass.lpfnWndProc = WndProc;
-
 	wndclass.cbClsExtra = 0;
-
 	wndclass.cbWndExtra = 0;
-
 	wndclass.hInstance = hInstance;
-
 	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-
 	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-
 	wndclass.lpszMenuName = NULL;
-
 	wndclass.lpszClassName = szAppName;
-
 
 	if (!RegisterClass(&wndclass))
 
@@ -60,7 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		TEXT("The Hello Program"),   // window caption
 
-		WS_OVERLAPPEDWINDOW,  // window style
+		WS_OVERLAPPEDWINDOW| WS_VSCROLL,  // window style
 
 		CW_USEDEFAULT,// initial x position
 
@@ -104,9 +87,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	static int  cxClient, cyClient;
-	static int num=0;
+	static int cxChar, cyChar;
+	static int num=0, iVertPos =0;
+	static LogWindow * logwindow = 0;
 	int         i;
+
 	static TCHAR c[2] = {0,0};
+
+	SCROLLINFO  si;
+	static int logIndex=65;
+
 	POINT       apt[NUM];
 	HDC                   hdc;
 	PAINTSTRUCT ps;
@@ -119,6 +109,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case   WM_SIZE:
 		cxClient = LOWORD(lParam);
 		cyClient = HIWORD(lParam);
+		si.cbSize = sizeof(si);
+		si.fMask = SIF_RANGE | SIF_PAGE;
+		si.nMin = 0;
+		si.nMax = 99;
+		si.nPage = cyClient / cyChar;
+		si.nPos = iVertPos;
+		SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+
 		return 0;
 	case WM_CREATE:
 		PlaySound(TEXT("hellowin.wav"), NULL, SND_FILENAME | SND_ASYNC);
@@ -126,20 +124,56 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		/*int cxChar = LOWORD(GetDialogBaseUnits());
 		int cyChar = HIWORD(GetDialogBaseUnits());*/
 		CreateWindow(TEXT("button"), TEXT("PUSHBUTTON"),
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 100, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 500, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
 		);
-		return 0;
-	case WM_COMMAND:
 
-		MessageBox(hwnd,TEXT(""),TEXT(""),0);
+		return 0;
+
+	case WM_COMMAND: {
+		TSTRING s = TEXT("µ«ÊÇ");
+		s.append(1,(TCHAR)logIndex);
+		logwindow->Log(s);
+		logIndex++;
+		return 0;
+	}
+			
+	case WM_VSCROLL:
+		si.cbSize = sizeof(si);
+		si.fMask = SIF_ALL;
+		GetScrollInfo(hwnd, SB_VERT, &si);
+		// Save the position for comparison later on
+
+		iVertPos = si.nPos;
+
+		switch (LOWORD(wParam)) {
+		case   SB_PAGEDOWN:
+			si.nPos += si.nPage;
+			break;
+		case   SB_THUMBTRACK:
+			si.nPos = si.nTrackPos;
+			break;
+		}
+		si.fMask = SIF_POS;
+		SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
+		GetScrollInfo(hwnd, SB_VERT, &si);
+		// If the position has changed, scroll the window and update it
+		if (si.nPos != iVertPos)
+		{
+			ScrollWindow(hwnd, 0, cyChar * (iVertPos - si.nPos),
+				NULL, NULL);
+			UpdateWindow(hwnd);
+		}
+
 		return 0;
 	case WM_TIMER:
 		//InvalidateRect(hwnd, NULL, TRUE);
-
 		hdc = GetDC(hwnd);
+
 		GetClientRect(hwnd, &rect);
 		DrawText(hdc, c, -1, &rect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+
 		//MoveToEx(hdc, 0, cyClient / 2, NULL);
 		//LineTo(hdc, cxClient, cyClient / 2);
 		num++;
@@ -153,7 +187,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			apt[i].y = (int)(cyClient / 2 * (1 - sin(TWOPI * i / NUM)));
 		}
 		
-		Polyline(hdc, apt, num);
+	//	Polyline(hdc, apt, num);
 
 		ReleaseDC(hwnd,hdc);
 		return 0;
@@ -164,7 +198,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hwnd, &rect);
 		DrawText(hdc, TEXT("Hello, Windows 98!"), -1, &rect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		
+		 
 		EndPaint(hwnd, &ps); 
 		return 0;
 	case   WM_DESTROY:
