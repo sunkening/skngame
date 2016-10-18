@@ -39,9 +39,9 @@ namespace skn_window {
 			cyClient = HIWORD(lParam);
 			si.cbSize = sizeof(si);
 			si.fMask = SIF_RANGE | SIF_PAGE;
-			si.nMin = 0;
+			si.nMin = logNum>0?1:0;
 			si.nPage = cyClient / (cyChar*LogWindow::logitemHeight);
-			si.nMax = max(logNum - 1, 0);
+			si.nMax = logNum ;
 			si.nPos = iVertPos;
 			SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
 			return 0;
@@ -57,18 +57,19 @@ namespace skn_window {
 			//LogItemVector::iterator iter;
 			int i = 0;
 			si.cbSize = sizeof(si);
-			si.fMask = SIF_POS;
+			si.fMask = SIF_ALL;
 			GetScrollInfo(hwnd, SB_VERT, &si);
 			iVertPos = si.nPos;
-			int iPaintBeg = max(0, iVertPos + ps.rcPaint.top / cyChar);
-			int iPaintEnd = min(logNum - 1, iVertPos + ps.rcPaint.bottom / cyChar);
-			//MessageBoxPrintf(TEXT(""), TEXT("%d  %d"), iPaintBeg, iPaintEnd);
+			ps.rcPaint.top -= 13;
+			int iPaintBeg = max(0, iVertPos + ps.rcPaint.top / cyChar-1);
+			int iPaintEnd = min(logNum - 1, iVertPos + ps.rcPaint.bottom / cyChar-1);
+			//MessageBoxPrintf(TEXT(""), TEXT("%d  %d  %d  %d"), iPaintBeg, iPaintEnd, iVertPos,si.nPage);
 			//GetClientRect(hwnd, &rect);
 			//Rectangle(hdc, 0, 0, rect.right, rect.bottom);
 			for (i = iPaintBeg; i <= iPaintEnd; i++)
 			{
 				LogItem *item = &(logwindow->itemList.at(i));
-				int y = (i - iVertPos)*cyChar;
+				int y = (i - iVertPos+1)*cyChar;
 				TextOut(hdc, cxChar, y, (PTCHAR)(item->info.c_str()), item->info.length());
 			}
 			EndPaint(hwnd, &ps);
@@ -104,6 +105,10 @@ namespace skn_window {
 			case   SB_THUMBTRACK:
 				si.nPos = si.nTrackPos;
 				break;
+				
+			case   SB_BOTTOM:
+				si.nPos = max(si.nMax-si.nPage+1,1);
+				break;
 			}
 			si.fMask = SIF_POS;
 			//GetScrollInfo(hwnd, SB_VERT, &si);
@@ -111,7 +116,12 @@ namespace skn_window {
 			{
 				SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
 				ScrollWindow(hwnd, 0, cyChar * (iVertPos - si.nPos), NULL, NULL);
+				//InvalidateRect(hwnd, 0, 0);
 				UpdateWindow(hwnd);
+			}
+			if (si.nPage>si.nMax)
+			{
+				InvalidateRect(hwnd, 0, 0);
 			}
 			return 0;
 		}
@@ -160,27 +170,32 @@ namespace skn_window {
 		si.cbSize = sizeof(si);
 		si.fMask = SIF_ALL;
 		GetScrollInfo(hwnd, SB_VERT, &si);
-		if (si.nMax<(itemList.size()-1))
-		{
-			//MessageBoxPrintf(TEXT("WM_SIZE"), TEXT("si.nPos  %d   %d"), si.nMax - si.nPage + 1, si.nPos);
-			if ((si.nMax - si.nPage+1) > si.nPos)
-			{
-				si.fMask = SIF_RANGE | SIF_POS;
-				si.nMax = itemList.size() - 1;
-				si.nPos = si.nMax - si.nPage + 1;
-				
-			}
-			else {
-				si.nMax = itemList.size() - 1;
-				si.fMask = SIF_RANGE;
-			}
-			
-			SetScrollInfo(hwnd, SB_VERT, &si, TRUE);//如果ScrollInfo的值改变了，会发送WM_SIZE消息。
-		}
+		si.nMax = itemList.size() ;
+		si.nMin = 1;
+		si.fMask = SIF_RANGE;
+		SetScrollInfo(hwnd, SB_VERT, &si, TRUE);//如果ScrollInfo的值改变了，会发送WM_SIZE消息。
+		//if (si.nMax<(itemList.size()-1))
+		//{
+		//	//MessageBoxPrintf(TEXT("WM_SIZE"), TEXT("si.nPos  %d   %d"), si.nMax - si.nPage + 1, si.nPos);
+		//	/*if ((si.nMax - si.nPage+1) > si.nPos)
+		//	{
+		//		si.fMask = SIF_RANGE | SIF_POS;
+		//		si.nMax = itemList.size() - 1;
+		//		si.nPos = si.nMax - si.nPage + 1;
+		//		
+		//	}
+		//	else {
+		//		si.nMax = itemList.size() - 1;
+		//		si.fMask = SIF_RANGE;
+		//	}*/
+		//	si.nMax = itemList.size() - 1;
+		//	si.fMask = SIF_RANGE;
+		//	SetScrollInfo(hwnd, SB_VERT, &si, TRUE);//如果ScrollInfo的值改变了，会发送WM_SIZE消息。
+		//}
 		
-			InvalidateRect(hwnd, 0, 0);
+			//InvalidateRect(hwnd, 0, 0);
 		
-		
+			SendMessage(hwnd,WM_VSCROLL, SB_BOTTOM,0);
 	}
 
 	void LogWindow::Log(PTCHAR szFormat, ...)

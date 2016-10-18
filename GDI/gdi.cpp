@@ -113,11 +113,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_CREATE:
 		PlaySound(TEXT("hellowin.wav"), NULL, SND_FILENAME | SND_ASYNC);
-		SetTimer(hwnd,1,15,0);
+		//SetTimer(hwnd,1,15,0);
 		/*int cxChar = LOWORD(GetDialogBaseUnits());
 		int cyChar = HIWORD(GetDialogBaseUnits());*/
 		CreateWindow(TEXT("button"), TEXT("PUSHBUTTON"),
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 500, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
+			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON, 100, 200, 100, 100, hwnd, (HMENU)0, ((LPCREATESTRUCT)lParam)->hInstance, NULL
 		);
 		
 		logwindow =LogWindow::Create(hwnd,0);
@@ -136,6 +136,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		s.append(1,(TCHAR)logIndex);
 		logwindow->Log(s);
 		logIndex++;
+		SCROLLINFO  si;
+		si.cbSize = sizeof(si);
+		si.fMask = SIF_ALL;
+		GetScrollInfo(logwindow->hwnd, SB_VERT, &si);
+		//MessageBoxPrintf(TEXT(""),TEXT("%d"),si.nPos);
 		return 0;
 	}
 			
