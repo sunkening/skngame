@@ -13,15 +13,9 @@ namespace skn_window {
 	WNDCLASS LogWindow::wndclass = { 0 };
 	LRESULT CALLBACK LogWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-		HDC                                          hdc;
-		PAINTSTRUCT                          ps;
 		RECT                                         rect;
-
 		LogWindow *logwindow = (LogWindow *)GetWindowLong(hwnd, 0);
-		static int cxChar, cyChar;//字体的平均宽度和高度
-		static int  cxClient, cyClient;
-
-		SCROLLINFO  si;
+		static int cxChar ;//字体的平均宽度和高度
 		static int num = 0, iVertPos = 0;
 		switch (message)
 		{
@@ -29,19 +23,20 @@ namespace skn_window {
 			logwindow = (LogWindow *)((CREATESTRUCT *)lParam)->lpCreateParams;
 			SetWindowLong(hwnd, 0, (LONG)logwindow);       // on/off flag
 			cxChar = LOWORD(GetDialogBaseUnits());
-			cyChar = HIWORD(GetDialogBaseUnits());
+			LogWindow::logitemHeight = HIWORD(GetDialogBaseUnits());
 			return 0;
 		}
 		case   WM_SIZE: {
 			//MessageBoxPrintf(TEXT("WM_SIZE"), TEXT("WM_SIZE"));
 			int logNum = logwindow->itemList.size();
-			cxClient = LOWORD(lParam);
-			cyClient = HIWORD(lParam);
+			logwindow->xClient = LOWORD(lParam);
+			logwindow->yClient = HIWORD(lParam);
+			SCROLLINFO  si;
 			si.cbSize = sizeof(si);
-			si.fMask = SIF_RANGE | SIF_PAGE;
-			si.nMin = logNum>0?1:0;
-			si.nPage = cyClient / (cyChar*LogWindow::logitemHeight);
-			si.nMax = logNum ;
+			si.fMask = SIF_RANGE | SIF_PAGE | SIF_DISABLENOSCROLL;
+			si.nMin = logNum > 0 ? 1 : 0;
+			si.nPage = logwindow->yClient / LogWindow::logitemHeight + 0.5f;
+			si.nMax = logNum;
 			si.nPos = iVertPos;
 			SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
 			return 0;
@@ -52,24 +47,27 @@ namespace skn_window {
 			InvalidateRect(hwnd, NULL, FALSE);*/
 			return 0;
 		case   WM_PAINT: {
+			PAINTSTRUCT  ps;
+			HDC  hdc;
 			hdc = BeginPaint(hwnd, &ps);
 			int logNum = logwindow->itemList.size();
 			//LogItemVector::iterator iter;
 			int i = 0;
+			SCROLLINFO  si;
 			si.cbSize = sizeof(si);
 			si.fMask = SIF_ALL;
 			GetScrollInfo(hwnd, SB_VERT, &si);
 			iVertPos = si.nPos;
 			ps.rcPaint.top -= 13;
-			int iPaintBeg = max(0, iVertPos + ps.rcPaint.top / cyChar-1);
-			int iPaintEnd = min(logNum - 1, iVertPos + ps.rcPaint.bottom / cyChar-1);
+			int iPaintBeg = max(0, iVertPos + ps.rcPaint.top / LogWindow::logitemHeight - 1);
+			int iPaintEnd = min(logNum - 1, iVertPos + ps.rcPaint.bottom / LogWindow::logitemHeight - 1);
 			//MessageBoxPrintf(TEXT(""), TEXT("%d  %d  %d  %d"), iPaintBeg, iPaintEnd, iVertPos,si.nPage);
 			//GetClientRect(hwnd, &rect);
 			//Rectangle(hdc, 0, 0, rect.right, rect.bottom);
 			for (i = iPaintBeg; i <= iPaintEnd; i++)
 			{
 				LogItem *item = &(logwindow->itemList.at(i));
-				int y = (i - iVertPos+1)*cyChar;
+				int y = (i - iVertPos + 1)*LogWindow::logitemHeight;
 				TextOut(hdc, cxChar, y, (PTCHAR)(item->info.c_str()), item->info.length());
 			}
 			EndPaint(hwnd, &ps);
@@ -93,8 +91,9 @@ namespace skn_window {
 		}
 
 		case WM_VSCROLL: {
+			SCROLLINFO  si;
 			si.cbSize = sizeof(si);
-			si.fMask = SIF_ALL;
+			si.fMask = SIF_ALL ;
 			GetScrollInfo(hwnd, SB_VERT, &si);
 			// Save the position for comparison later on
 			iVertPos = si.nPos;
@@ -105,21 +104,18 @@ namespace skn_window {
 			case   SB_THUMBTRACK:
 				si.nPos = si.nTrackPos;
 				break;
-				
 			case   SB_BOTTOM:
-				si.nPos = max(si.nMax-si.nPage+1,1);
+				si.nPos =  si.nMax  ;//更精确的用max(si.nMax-si.nPage+1,1)，但windows会自动修改滚动条位置到一个合理的最大值
 				break;
 			}
-			si.fMask = SIF_POS;
-			//GetScrollInfo(hwnd, SB_VERT, &si);
+			si.fMask = SIF_POS | SIF_DISABLENOSCROLL;
 			if (si.nPos != iVertPos)
 			{
 				SetScrollInfo(hwnd, SB_VERT, &si, TRUE);
-				ScrollWindow(hwnd, 0, cyChar * (iVertPos - si.nPos), NULL, NULL);
-				//InvalidateRect(hwnd, 0, 0);
+				ScrollWindow(hwnd, 0, LogWindow::logitemHeight * (iVertPos - si.nPos), NULL, NULL);
 				UpdateWindow(hwnd);
 			}
-			if (si.nPage>si.nMax)
+			if (si.nPage >= si.nMax)
 			{
 				InvalidateRect(hwnd, 0, 0);
 			}
@@ -152,7 +148,7 @@ namespace skn_window {
 
 	LogWindow::LogWindow()
 	{
-		isAutoScroll = true;
+		 
 	}
 
 	LogWindow::~LogWindow()
@@ -165,37 +161,22 @@ namespace skn_window {
 		LogItem logitem;
 		logitem.info = s;
 		itemList.push_back(logitem);
-		//InvalidateRect(hwnd, 0, 0);
 		SCROLLINFO  si;
 		si.cbSize = sizeof(si);
 		si.fMask = SIF_ALL;
 		GetScrollInfo(hwnd, SB_VERT, &si);
-		si.nMax = itemList.size() ;
+		bool isAutoScroll=true;
+		if (si.nPos<(si.nMax - si.nPage + 1))
+		{
+			isAutoScroll = false;
+		}
+		si.nMax = itemList.size();
 		si.nMin = 1;
-		si.fMask = SIF_RANGE;
+		si.nPage=  yClient /  LogWindow::logitemHeight + 0.5f;
+		si.fMask = SIF_PAGE|SIF_RANGE | SIF_DISABLENOSCROLL;
 		SetScrollInfo(hwnd, SB_VERT, &si, TRUE);//如果ScrollInfo的值改变了，会发送WM_SIZE消息。
-		//if (si.nMax<(itemList.size()-1))
-		//{
-		//	//MessageBoxPrintf(TEXT("WM_SIZE"), TEXT("si.nPos  %d   %d"), si.nMax - si.nPage + 1, si.nPos);
-		//	/*if ((si.nMax - si.nPage+1) > si.nPos)
-		//	{
-		//		si.fMask = SIF_RANGE | SIF_POS;
-		//		si.nMax = itemList.size() - 1;
-		//		si.nPos = si.nMax - si.nPage + 1;
-		//		
-		//	}
-		//	else {
-		//		si.nMax = itemList.size() - 1;
-		//		si.fMask = SIF_RANGE;
-		//	}*/
-		//	si.nMax = itemList.size() - 1;
-		//	si.fMask = SIF_RANGE;
-		//	SetScrollInfo(hwnd, SB_VERT, &si, TRUE);//如果ScrollInfo的值改变了，会发送WM_SIZE消息。
-		//}
-		
-			//InvalidateRect(hwnd, 0, 0);
-		
-			SendMessage(hwnd,WM_VSCROLL, SB_BOTTOM,0);
+		if(isAutoScroll)
+		SendMessage(hwnd, WM_VSCROLL, SB_BOTTOM, 0);
 	}
 
 	void LogWindow::Log(PTCHAR szFormat, ...)
@@ -224,5 +205,5 @@ namespace skn_window {
 		return logwindow;
 	}
 
-	const float LogWindow::logitemHeight = 1.0f;
+	  float LogWindow::logitemHeight = 16.0f;
 }
