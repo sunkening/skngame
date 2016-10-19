@@ -15,7 +15,7 @@ namespace skn_window {
 	{
 		RECT                                         rect;
 		LogWindow *logwindow = (LogWindow *)GetWindowLong(hwnd, 0);
-		static int cxChar ;//字体的平均宽度和高度
+		static int cxChar ;//字体的平均宽度
 		static int num = 0, iVertPos = 0;
 		switch (message)
 		{
