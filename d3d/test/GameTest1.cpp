@@ -428,3 +428,100 @@ void GameTest4::play(float timeDelta)
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
 }
+
+
+bool GameTest5::setup()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	
+	ID3DXBuffer * adjBuffer;
+	ID3DXBuffer * materialBuffer;
+	DWORD mtrlNum;
+	int hr = D3DXLoadMeshFromX(TEXT("res/xfile/bigship1.x"),D3DXMESH_MANAGED,device,&adjBuffer,&materialBuffer,0,&mtrlNum,&mesh);
+	if (FAILED(hr))
+	{
+		::MessageBox(0, _T("D3DXLoadMeshFromX() - FAILED"), 0, 0);
+		return false;
+	}
+	if (materialBuffer!=0 && mtrlNum!=0) {
+		D3DXMATERIAL * mtrls= (D3DXMATERIAL *)materialBuffer->GetBufferPointer();
+		for (int i = 0; i < mtrlNum;i++) {
+			mtrls[i].MatD3D.Ambient = mtrls[i].MatD3D.Diffuse;
+			materials.push_back(mtrls[i].MatD3D);
+			if (mtrls[i].pTextureFilename!=0)
+			{
+				IDirect3DTexture9* tex = 0;
+				D3DXCreateTextureFromFile(device,(PTCHAR)mtrls[i].pTextureFilename,&tex);
+				textures.push_back(tex);
+			}
+			else {
+				textures.push_back(0);
+			}
+		}
+		materialBuffer->Release();
+	}
+
+	D3DXMATRIX   proj;
+	D3DXMatrixPerspectiveFovLH(
+		&proj,
+		D3DX_PI * 0.5f, // 90 - degree
+		(float)800 / (float)600,
+		1.0f,
+		1000.0f);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+	D3DXVECTOR3 positon(0.0f, 0.0f, -25.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXMATRIX   view;
+	D3DXMatrixLookAtLH(&view, &positon, &target, &up);
+	device->SetTransform(D3DTS_VIEW, &view);
+
+	D3DXVECTOR3 lightdirecton(-1, 0, 0);
+	D3DXVECTOR3 lightPosition(5, 0, 0);
+	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
+	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
+	device->SetLight(0, &light0);
+	device->SetLight(1, &light1);
+	device->LightEnable(0, true);
+	device->LightEnable(1, true);
+	//device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	//device->SetRenderState(D3DRS_LIGHTING, false);//默认是启用的
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_SPECULARENABLE, true);
+	// use alpha in material's diffuse component for alpha
+	//	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);//透明度来源
+	device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	// set blending factors so that alpha component determines transparency
+	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);//混合因子
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);//混合因子
+	return true;
+}
+
+void GameTest5::play(float timeDelta)
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+
+	D3DXMATRIX ry, positon, positon2;
+	static float y = 0;
+	y += timeDelta;
+	if (y > 6.28f)
+	{
+		y = 0;
+	}
+	D3DXMatrixRotationY(&ry, y);
+	D3DXMatrixTranslation(&positon, 0, 1, 2);
+	device->SetTransform(D3DTS_WORLD, &(ry*positon));
+
+	device->BeginScene();
+	for (int i = 0; i < materials.size(); i++)
+	{
+		device->SetMaterial(&materials[i]);
+		device->SetTexture(0, textures[i]);
+		mesh->DrawSubset(i);
+	}
+	 
+	device->EndScene();
+	device->Present(0, 0, 0, 0);
+}

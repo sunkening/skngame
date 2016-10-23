@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 class GameTest1 :public skn_d3d::GameMain
 {
 
@@ -36,6 +37,20 @@ class GameTest4 :public skn_d3d::GameMain
 public:
 	ID3DXMesh* mesh;
 	IDirect3DTexture9 *textures[2];
+	static const int numSub;
+	virtual bool setup() override;
+	//IDirect3DVertexBuffer9 *vertexBuffer;
+	//IDirect3DIndexBuffer9* indexBuffer;
+	virtual void play(float timeDelta) override;
+};
+//x file
+class GameTest5 :public skn_d3d::GameMain
+{
+
+public:
+	ID3DXMesh* mesh;
+	std::vector<D3DMATERIAL9> materials;
+	std::vector<IDirect3DTexture9 *> textures;
 	static const int numSub;
 	virtual bool setup() override;
 	//IDirect3DVertexBuffer9 *vertexBuffer;
