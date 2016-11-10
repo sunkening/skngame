@@ -1,10 +1,14 @@
 #include "StdAfx.h"
 #include<d3d9.h>
 #include<d3dx9.h>
-#include"../D3DUtil.h"
+#include <fstream> 
+#include <vector>
+
 #include <iostream>
 using namespace std;
+#include"../D3DUtil.h"
 #include "../GameMain.h"
+#include "../Terrain.h"
 #include "GameTest1.h"
 using namespace skn_d3d;
 bool GameTest1::setup()
@@ -433,7 +437,7 @@ void GameTest4::play(float timeDelta)
 bool GameTest5::setup()
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	
+	terrain = new skn_d3d::Terrain(device, "res/texture/coastMountain64.raw", 64, 64, 10, 0.5f);
 	ID3DXBuffer * adjBuffer;
 	ID3DXBuffer * materialBuffer;
 	DWORD mtrlNum;
@@ -469,7 +473,7 @@ bool GameTest5::setup()
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 0.0f, -25.0f);
+	D3DXVECTOR3 positon(0.0f, 100.0f, -25.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   view;
@@ -501,7 +505,7 @@ bool GameTest5::setup()
 void GameTest5::play(float timeDelta)
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 255, 0), 1.0f, 0);
 
 	D3DXMATRIX ry, positon, positon2;
 	static float y = 0;
@@ -521,7 +525,193 @@ void GameTest5::play(float timeDelta)
 		device->SetTexture(0, textures[i]);
 		mesh->DrawSubset(i);
 	}
-	 
+	terrain->draw(0, 0, 0, false);
+	device->EndScene();
+	device->Present(0, 0, 0, 0);
+}
+
+//terrain
+bool GameTest6::setup()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	terrain = new skn_d3d::Terrain(device,"res/texture/coastMountain64.raw", 64, 64, 10, 0.5f);
+	IDirect3DTexture9 *texture = d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
+	device->SetTexture(0, texture);
+	D3DXMATRIX   proj;
+	D3DXMatrixPerspectiveFovLH(
+		&proj,
+		D3DX_PI * 0.5f, // 90 - degree
+		(float)800 / (float)600,
+		1.0f,
+		1000.0f);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+	D3DXVECTOR3 positon(0.0f, 100.0f, -250.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXMATRIX   view;
+	D3DXMatrixLookAtLH(&view, &positon, &target, &up);
+	device->SetTransform(D3DTS_VIEW, &view);
+
+	D3DXVECTOR3 lightdirecton(-1, 0, 0);
+	D3DXVECTOR3 lightPosition(5, 0, 0);
+	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
+	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
+	device->SetLight(0, &light0);
+	device->SetLight(1, &light1);
+	//device->LightEnable(0, true);
+	//device->LightEnable(1, true);
+	//device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	//device->SetRenderState(D3DRS_LIGHTING, false);//默认是启用的
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_SPECULARENABLE, true);
+	// use alpha in material's diffuse component for alpha
+	//	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);//透明度来源
+	device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	// set blending factors so that alpha component determines transparency
+	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);//混合因子
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);//混合因子
+	return true;
+}
+
+void GameTest6::play(float timeDelta)
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 255, 0), 1.0f, 0);
+ 
+
+	device->BeginScene();
+	terrain->draw(0,0,0,false);
+
+	device->EndScene();
+	device->Present(0, 0, 0, 0);
+}
+
+
+bool GameTest7::setup()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	std::string fileName = "res/texture/coastMountain64.raw";
+	int _numCellsPerRow = 64 - 1;
+	int _numCellsPerCol = 64 - 1;
+	int _numVersPreRow = 64;
+	int _numVersPerCol = 64;
+	int _numTriangles = _numCellsPerCol*_numCellsPerRow * 2;
+	int _cellSpacing = 10;
+	float _heithtScale = 1;
+	int _numVertices = 64*64;
+	int _xlength = _numCellsPerRow*_cellSpacing;
+	int _zlength = _numCellsPerCol*_cellSpacing;
+	std::vector<byte> in(_numVertices);
+	std::ifstream infile(fileName.c_str(), std::ios_base::binary);
+	if (!infile.is_open())
+	{
+		return false;
+	}
+	infile.read((char*)&in[0], _numVertices);
+	infile.close();
+	std::vector<int> _heightMap;
+	_heightMap.resize(_numVertices);
+	for (int i = 0; i < in.size(); i++)
+	{
+		_heightMap[i] = in[i];
+	}
+
+	int startx = -_xlength / 2, startz = _zlength / 2;
+	int index = 0;
+	float du = 1.0f / _numCellsPerRow;
+	float dv = 1.0f / _numCellsPerCol;
+
+
+	int hr = d3dUtil->device->CreateVertexBuffer(_numVertices * sizeof(Vertex), D3DUSAGE_WRITEONLY, Vertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
+	if (FAILED(hr))
+	{
+		::MessageBox(0, _T("CreateVertexBuffer() - FAILED"), 0, 0);
+		return false;
+	}
+	Vertex* vertexes;
+	vertexBuffer->Lock(0, 0, (void **)&vertexes, D3DLOCK_DISCARD);
+	for (int j = 0; j < _numVersPerCol; j++)
+	{
+		int x = startx;
+		for (int i = 0; i < _numVersPreRow; i++)
+		{
+			vertexes[index] = Vertex(x, 0, startz);
+			x += _cellSpacing;
+		}
+		startz += _cellSpacing;
+	}
+	vertexBuffer->Unlock();
+	hr = d3dUtil->device->CreateIndexBuffer(_numTriangles * 3 * sizeof(WORD), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, 0);
+	if (FAILED(hr))
+	{
+		::MessageBox(0, _T("CreateIndexBuffer() - FAILED"), 0, 0);
+		return false;
+	}
+	WORD * indexes;
+	int baseIndex = 0;
+
+	indexBuffer->Lock(0, 0, (void **)&indexes, D3DLOCK_DISCARD);
+	for (int i = 0; i < _numCellsPerCol; i++)
+	{
+		for (int j = 0; j < _numCellsPerRow; j++)
+		{
+			indexes[baseIndex] = i*_numVersPreRow + j;
+			indexes[baseIndex + 1] = indexes[baseIndex] + 1;
+			indexes[baseIndex + 2] = indexes[baseIndex] + _numVersPreRow;
+
+			indexes[baseIndex + 3] = indexes[baseIndex + 2];
+			indexes[baseIndex + 4] = indexes[baseIndex + 1];
+			indexes[baseIndex + 5] = indexes[baseIndex + 3] + 1;
+			baseIndex += 6;
+		}
+	}
+	indexBuffer->Unlock();
+	D3DXMATRIX   proj;
+	D3DXMatrixPerspectiveFovLH(
+		&proj,
+		D3DX_PI * 0.5f, // 90 - degree
+		(float)800 / (float)600,
+		1.0f,
+		1000.0f);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+	D3DXVECTOR3 positon(0.0f, 1000.0f, -500.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXMATRIX   v;
+	D3DXMatrixLookAtLH(&v, &positon, &target, &up);
+	device->SetTransform(D3DTS_VIEW, &v);
+	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	device->SetRenderState(D3DRS_LIGHTING, false);
+
+
+	return true;
+}
+
+void GameTest7::play(float timeDelta)
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0);
+
+	D3DXMATRIX ry, positon;
+	static float y = 0;
+	y += timeDelta;
+	if (y > 6.28f)
+	{
+		y = 0;
+	}
+	D3DXMatrixRotationY(&ry, y);
+	D3DXMatrixTranslation(&positon, 0, 1, 0);
+	device->SetTransform(D3DTS_WORLD, &(ry*positon));
+
+	device->BeginScene();
+	device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
+	device->SetIndices(indexBuffer);
+	device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+	//	device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4096, 0, 7938);
+
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
 }

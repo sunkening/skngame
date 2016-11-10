@@ -84,6 +84,9 @@ public:
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+	float f = 1/ 2.0f;
+	cout << f << endl;
 	List list;
 /*
 	for (int i=0;i<5;i++)
@@ -146,7 +149,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	g.deepFirstSearch(0); 
-	 
+	getchar();
 	return 0;
 }
 
