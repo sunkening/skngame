@@ -545,7 +545,7 @@ bool GameTest6::setup()
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 100.0f, -250.0f);
+	D3DXVECTOR3 positon(0.0f, 200.0f, -350.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   view;
@@ -558,7 +558,7 @@ bool GameTest6::setup()
 	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
 	device->SetLight(0, &light0);
 	device->SetLight(1, &light1);
-	//device->LightEnable(0, true);
+	device->LightEnable(0, true);
 	//device->LightEnable(1, true);
 	//device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	//device->SetRenderState(D3DRS_LIGHTING, false);//默认是启用的
@@ -596,10 +596,10 @@ bool GameTest7::setup()
 	int _numCellsPerCol = 64 - 1;
 	int _numVersPreRow = 64;
 	int _numVersPerCol = 64;
-	int _numTriangles = _numCellsPerCol*_numCellsPerRow * 2;
+	  _numTriangles = _numCellsPerCol*_numCellsPerRow * 2;
 	int _cellSpacing = 10;
 	float _heithtScale = 1;
-	int _numVertices = 64*64;
+	 _numVertices = 64*64;
 	int _xlength = _numCellsPerRow*_cellSpacing;
 	int _zlength = _numCellsPerCol*_cellSpacing;
 	std::vector<byte> in(_numVertices);
@@ -623,21 +623,33 @@ bool GameTest7::setup()
 	float dv = 1.0f / _numCellsPerCol;
 
 
-	int hr = d3dUtil->device->CreateVertexBuffer(_numVertices * sizeof(Vertex), D3DUSAGE_WRITEONLY, Vertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
+	int hr = d3dUtil->device->CreateVertexBuffer(_numVertices * sizeof(ColorVertex), D3DUSAGE_WRITEONLY, ColorVertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
 	if (FAILED(hr))
 	{
 		::MessageBox(0, _T("CreateVertexBuffer() - FAILED"), 0, 0);
 		return false;
 	}
-	Vertex* vertexes;
+	ColorVertex* vertexes;
 	vertexBuffer->Lock(0, 0, (void **)&vertexes, D3DLOCK_DISCARD);
-	for (int j = 0; j < _numVersPerCol; j++)
+	/*vertexes[0] = ColorVertex(-1, 0, 1); vertexes[0].color = D3DUtil::BLUE;
+	vertexes[1] = ColorVertex(0, 0, 1); vertexes[1].color = D3DUtil::BLUE;
+	vertexes[2] = ColorVertex(1, 0, 1); vertexes[2].color = D3DUtil::BLUE;
+
+	vertexes[3] = ColorVertex(-1, 0, 0); vertexes[3].color = D3DUtil::GREEN;
+	vertexes[4] = ColorVertex(0, 0, 0); vertexes[4].color = D3DUtil::GREEN;
+	vertexes[5] = ColorVertex(1, 0, 0); vertexes[5].color = D3DUtil::GREEN;
+
+	vertexes[6] = ColorVertex(-1, 0, -1); vertexes[6].color = D3DUtil::RED;
+	vertexes[7] = ColorVertex(0, 0, -1); vertexes[7].color = D3DUtil::RED;
+	vertexes[8] = ColorVertex(1, 0, -1); vertexes[8].color = D3DUtil::RED;*/
+	for (int i = 0; i< _numVersPerCol; i++)
 	{
 		int x = startx;
-		for (int i = 0; i < _numVersPreRow; i++)
+		for (int j = 0; j < _numVersPreRow; j++)
 		{
-			vertexes[index] = Vertex(x, 0, startz);
+			vertexes[index] = ColorVertex(x, 0, startz);
 			x += _cellSpacing;
+			index++;
 		}
 		startz += _cellSpacing;
 	}
@@ -650,8 +662,11 @@ bool GameTest7::setup()
 	}
 	WORD * indexes;
 	int baseIndex = 0;
-
+	_numCellsPerCol = 2;
+	_numCellsPerRow = 2;
+	_numVersPreRow = 3;
 	indexBuffer->Lock(0, 0, (void **)&indexes, D3DLOCK_DISCARD);
+	 
 	for (int i = 0; i < _numCellsPerCol; i++)
 	{
 		for (int j = 0; j < _numCellsPerRow; j++)
@@ -675,7 +690,7 @@ bool GameTest7::setup()
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 1000.0f, -500.0f);
+	D3DXVECTOR3 positon(0.0f, 2.0f, -2.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   v;
@@ -702,15 +717,15 @@ void GameTest7::play(float timeDelta)
 		y = 0;
 	}
 	D3DXMatrixRotationY(&ry, y);
-	D3DXMatrixTranslation(&positon, 0, 1, 0);
+	D3DXMatrixTranslation(&positon, 0, 0, 0);
 	device->SetTransform(D3DTS_WORLD, &(ry*positon));
 
 	device->BeginScene();
-	device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
+	device->SetStreamSource(0, vertexBuffer, 0, sizeof(ColorVertex));
 	device->SetIndices(indexBuffer);
 	device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
 	//	device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
-	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4096, 0, 7938);
+	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 9, 0, 8);
 
 	device->EndScene();
 	device->Present(0, 0, 0, 0);

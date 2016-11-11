@@ -79,6 +79,8 @@ public:
 	skn_d3d::Terrain *terrain;
 	IDirect3DVertexBuffer9 *vertexBuffer;
 	IDirect3DIndexBuffer9* indexBuffer;
+	int _numTriangles;
+	int _numVertices;
 	virtual bool setup() override;
 	//IDirect3DVertexBuffer9 *vertexBuffer;
 	//IDirect3DIndexBuffer9* indexBuffer;

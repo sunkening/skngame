@@ -92,9 +92,9 @@ namespace skn_d3d {
 			_device->SetStreamSource(0, _vertexBuffer, 0, sizeof(TerrainVertex));
 			_device->SetIndices(_indexBuffer);
 			_device->SetFVF(TerrainVertex::FVF);
-			_device->SetRenderState(D3DRS_LIGHTING, false);
+			//_device->SetRenderState(D3DRS_LIGHTING, false);
 			hr=_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _numVertices, 0, _numTriangles);
-			_device->SetRenderState(D3DRS_LIGHTING, true);
+			//_device->SetRenderState(D3DRS_LIGHTING, true);
 			if (FAILED(hr))
 			{
 				::MessageBox(0, _T("computeIndices - FAILED"), 0, 0);
@@ -118,6 +118,8 @@ namespace skn_d3d {
 		int index = 0;
 		float du = 1.0f / _numCellsPerRow;
 		float dv = 1.0f / _numCellsPerCol;
+		/*du = 1;
+		dv = 1;*/
 		TerrainVertex* vertexes;
 		_vertexBuffer->Lock(0, 0, (void **)&vertexes, 0);
 		for (int j=0;j<_numVersPerCol;j++)
@@ -127,8 +129,9 @@ namespace skn_d3d {
 			{
 				vertexes[index] = TerrainVertex(x, _heightMap[index],startz, i*du,j*dv);
 				x += _cellSpacing;
+				index++;
 			}
-			startz += _cellSpacing;
+			startz -= _cellSpacing;
 		}
 		_vertexBuffer->Unlock();
 		return true;
