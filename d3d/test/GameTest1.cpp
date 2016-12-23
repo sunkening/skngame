@@ -1,14 +1,5 @@
-#include "StdAfx.h"
-#include<d3d9.h>
-#include<d3dx9.h>
-#include <fstream> 
-#include <vector>
 
-#include <iostream>
-using namespace std;
-#include"../D3DUtil.h"
-#include "../GameMain.h"
-#include "../Terrain.h"
+#include"../skn3d.h"
 #include "GameTest1.h"
 using namespace skn_d3d;
 bool GameTest1::setup()
@@ -533,24 +524,29 @@ void GameTest5::play(float timeDelta)
 //terrain
 bool GameTest6::setup()
 {
+	TheCamera.setCameraType(skn_d3d::Camera::LANDOBJECT) ;
 	IDirect3DDevice9* device = d3dUtil->device;
 	terrain = new skn_d3d::Terrain(device,"res/texture/coastMountain64.raw", 64, 64, 10, 0.5f);
-	IDirect3DTexture9 *texture = d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
-	device->SetTexture(0, texture);
+	TSTRING texname = TEXT("res/texture/wall.png");
+	terrain->loadTexture(texname);
+	//D3DXVECTOR3 lightDirection(-1,0,0);
+	//terrain->lightTerrain(&lightDirection);
+	snow = new skn_d3d::Snow(10000);
+	snow->init(device, TEXT("res/texture/snowflake.dds"));
 	D3DXMATRIX   proj;
 	D3DXMatrixPerspectiveFovLH(
 		&proj,
-		D3DX_PI * 0.5f, // 90 - degree
+		D3DX_PI * 0.25f, // 90 - degree
 		(float)800 / (float)600,
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 200.0f, -350.0f);
+	/*D3DXVECTOR3 positon(0.0f, 200.0f, -450.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   view;
 	D3DXMatrixLookAtLH(&view, &positon, &target, &up);
-	device->SetTransform(D3DTS_VIEW, &view);
+	device->SetTransform(D3DTS_VIEW, &view);*/
 
 	D3DXVECTOR3 lightdirecton(-1, 0, 0);
 	D3DXVECTOR3 lightPosition(5, 0, 0);
@@ -577,12 +573,51 @@ bool GameTest6::setup()
 void GameTest6::play(float timeDelta)
 {
 	IDirect3DDevice9* device = d3dUtil->device;
+ 
+		if (::GetAsyncKeyState(VK_UP) & 0x8000f)
+			TheCamera.walk(100.0f * timeDelta);
+
+		if (::GetAsyncKeyState(VK_DOWN) & 0x8000f)
+			TheCamera.walk(-100.0f * timeDelta);
+
+		if (::GetAsyncKeyState(VK_LEFT) & 0x8000f)
+			TheCamera.yaw(-1.0f * timeDelta);
+
+		if (::GetAsyncKeyState(VK_RIGHT) & 0x8000f)
+			TheCamera.yaw(1.0f * timeDelta);
+
+		if (::GetAsyncKeyState('N') & 0x8000f)
+			TheCamera.strafe(-100.0f * timeDelta);
+
+		if (::GetAsyncKeyState('M') & 0x8000f)
+			TheCamera.strafe(100.0f * timeDelta);
+
+		if (::GetAsyncKeyState('W') & 0x8000f)
+			TheCamera.pitch(1.0f * timeDelta);
+
+		if (::GetAsyncKeyState('S') & 0x8000f)
+			TheCamera.pitch(-1.0f * timeDelta);
+			if (::GetAsyncKeyState('Q') & 0x8000f)
+				TheCamera.fly(100.0f * timeDelta);
+			if (::GetAsyncKeyState('A') & 0x8000f)
+				TheCamera.fly(-100.0f * timeDelta);
+		D3DXVECTOR3 pos;
+		TheCamera.getPosition(&pos);
+		float height = terrain->getHeight(pos.x, pos.z);
+		
+		pos.y = height + 10.0f; // add height because we're standing up
+		TheCamera.setPosition(&pos);
+
+		D3DXMATRIX V;
+		TheCamera.getViewMatrix(&V);
+		device->SetTransform(D3DTS_VIEW, &V);
+		snow->update(timeDelta);
 	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 255, 0), 1.0f, 0);
  
-
+	
 	device->BeginScene();
 	terrain->draw(0,0,0,false);
-
+	snow->render();
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
 }

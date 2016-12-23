@@ -83,6 +83,7 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="base.h" />
     <ClInclude Include="List.h" />
+    <ClInclude Include="SequenceAlgorithm.h" />
     <ClInclude Include="SException.h" />
     <ClInclude Include="sknlib.h" />
     <ClInclude Include="tree.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="base.cpp" />
     <ClCompile Include="List.cpp" />
+    <ClCompile Include="SequenceAlgorithm.cpp" />
     <ClCompile Include="SException.cpp" />
     <ClCompile Include="tree.cpp" />
   </ItemGroup>

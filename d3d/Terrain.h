@@ -29,10 +29,15 @@ namespace skn_d3d {
 		int _numTriangles;
 		int _xlength;
 		int _zlength;
+		IDirect3DTexture9 * _tex;
 		bool readRawFile(std::string fileName);
-		int getHeight(int row, int col);
-		void setHeight(int row, int col, int height);
+		int getHeightmapEntry(int row, int col);
+		float getHeight(float x,float z);
+		void setHeightmapEntry(int row, int col, int height);
 		bool draw(float x,float y,float z,bool drawLine);
+		float computeShade(int cellRow,int cellCol,D3DXVECTOR3* directionToLight);
+		bool lightTerrain(D3DXVECTOR3 * directionToLight);
+		bool loadTexture(TSTRING filename);
 	private :
 		bool buideVertex();
 		bool buideIndex();

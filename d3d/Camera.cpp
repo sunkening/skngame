@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include <d3dx9.h>
 #include "Camera.h"
 
 namespace skn_d3d

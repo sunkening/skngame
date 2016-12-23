@@ -160,7 +160,7 @@ bool D3DUtil::InitD3D(
 
 		D3DCAPS9 caps;
 		d3d9->GetDeviceCaps(D3DADAPTER_DEFAULT, deviceType, &caps);
-
+		//cout <<(bool) (caps.FVFCaps&D3DFVFCAPS_PSIZE) << endl;
 		int vp = 0;
 		if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
 			vp = D3DCREATE_HARDWARE_VERTEXPROCESSING;
@@ -236,8 +236,43 @@ bool D3DUtil::InitD3D(
 		return ::DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
+	float Learp(float a, float b, float t)
+	{
+		 
+			return a + (b - a)*t;
+		 
+	}
+
 	const DWORD Vertex::FVF = D3DFVF_XYZ |  D3DFVF_NORMAL | D3DFVF_TEX1 ;
 	//D3DFVF_DIFFUSE不能和D3DFVF_NORMAL等其他一起使用，否则颜色会不正常，为何？
 	//const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1;D3DFVF_DIFFUSE
 	const DWORD ColorVertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE  ;
+
+	float D3DUtil::GetRandomFloat(float lowBound, float highBound)
+	{
+		if (lowBound >= highBound) // bad input
+			return lowBound;
+
+		// get random float in [0, 1] interval
+		float f = (rand() % 10000) * 0.0001f;
+
+		// return float in [lowBound, highBound] interval. 
+		return (f * (highBound - lowBound)) + lowBound;
+	}
+
+	void D3DUtil::GetRandomVector(
+		D3DXVECTOR3* out,
+		D3DXVECTOR3* min,
+		D3DXVECTOR3* max)
+	{
+		out->x = GetRandomFloat(min->x, max->x);
+		out->y = GetRandomFloat(min->y, max->y);
+		out->z = GetRandomFloat(min->z, max->z);
+	}
+
+	DWORD D3DUtil::FtoDw(float f)
+	{
+		return *((DWORD*)&f);
+	}
+
 }

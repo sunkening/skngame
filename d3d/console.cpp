@@ -10,12 +10,10 @@
 #include <windowsx.h> 
 #include <tchar.h>
 #include <mmsystem.h>
-#include <iostream> // include important C/C++ stuff
 #include <conio.h>
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <math.h>
@@ -23,20 +21,17 @@
 #include <fcntl.h>
 #include <sys/timeb.h>
 #include <time.h>
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
+ 
+ 
+ 
 using namespace std;
-#include<d3d9.h>
-#include<d3dx9.h>
-#include<IOSTREAM>
-#include "D3DUtil.h"
-#include "GameMain.h"
-#include "Terrain.h"
+
+
+ 
+#include "skn3d.h"
 #include "test/GameTest1.h"
  
-#include "Camera.h"
+
 
 
 

@@ -39,6 +39,15 @@
     <ClInclude Include="test\GameTest1.h">
       <Filter>头文件\NewFilter1</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="skn3d.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -58,6 +67,12 @@
     </ClCompile>
     <ClCompile Include="test\GameTest1.cpp">
       <Filter>源文件\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

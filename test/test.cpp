@@ -4,9 +4,11 @@
 #include "stdafx.h"
 #include "sknlib.h"
 using namespace skn;
-using namespace std;
+
 #include <iostream>
- 
+#include <algorithm>
+
+using namespace std;
 class MyNode:public GraphNode
 {
 public:
@@ -81,12 +83,22 @@ public:
 		sort(a,s+1,r);
 	 }
  };
-
+ void print(int & i) {
+	 cout << i << endl;
+ }
 int _tmain(int argc, _TCHAR* argv[])
 {
+	vector<int> v;
+	v.push_back(4);
+	v.push_back(-2);
+	v.push_back(24);
+	v.push_back(32);
+	v.push_back(24);
+	v.push_back(28);
+	SequenceAlgorithm::SelectionSort(&v);
+	for_each(v.begin(),v.end(),print);
 
-	float f = 1/ 2.0f;
-	cout << f << endl;
+	cout << "*****************************" <<  endl;
 	List list;
 /*
 	for (int i=0;i<5;i++)
@@ -94,7 +106,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		Student *o=new Student;
 		o->id=i;
 		list.add(o);
-	}*/
+	}
 	Student *o1=new Student;
 	o1->id=1;
 	list.add(o1);
@@ -149,6 +161,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	g.deepFirstSearch(0); 
+	*/
 	getchar();
 	return 0;
 }

@@ -31,6 +31,33 @@ namespace skn_d3d
 		static D3DMATERIAL9 InitMaterial(D3DXCOLOR a, D3DXCOLOR d, D3DXCOLOR s, D3DXCOLOR e , float p = 0.0f);
 		static D3DMATERIAL9 InitMaterial(D3DCOLOR c, float diffuse=1,float s=0,float e=0);
 		IDirect3DTexture9* LoadTexture(TCHAR * filename);
+		//
+		// Cleanup
+		//
+		 template<class T> static void Release(T t)
+		{
+			if (t)
+			{
+				t->Release();
+				t = 0;
+			}
+		}
+
+		 template<class T>static void Delete(T t)
+		{
+			if (t)
+			{
+				delete t;
+				t = 0;
+			}
+		}
+		static float GetRandomFloat(float lowBound, float highBound);
+		 // Desc: Returns a random vector in the bounds specified by min and max.
+		static void GetRandomVector(
+			 D3DXVECTOR3* out,
+			 D3DXVECTOR3* min,
+			 D3DXVECTOR3* max);
+		static DWORD FtoDw(float f);
 };
 	struct ColorVertex
 	{
@@ -66,5 +93,5 @@ struct Vertex
 	
 	static const DWORD FVF;
 };
-
+float Learp(float a, float b, float t);
 }

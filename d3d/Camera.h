@@ -1,5 +1,5 @@
 #pragma once
-#include <d3dx9.h>
+
 namespace skn_d3d
 {
 	class Camera

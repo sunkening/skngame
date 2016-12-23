@@ -64,14 +64,15 @@ class GameTest6 :public skn_d3d::GameMain
 
 public:
 	skn_d3d::Terrain *terrain;
-	 
+	skn_d3d::Camera   TheCamera;
+	skn_d3d::Snow *snow;
 	virtual bool setup() override;
 	//IDirect3DVertexBuffer9 *vertexBuffer;
 	//IDirect3DIndexBuffer9* indexBuffer;
 	virtual void play(float timeDelta) override;
 };
 
-//terrain
+//particle
 class GameTest7 :public skn_d3d::GameMain
 {
 

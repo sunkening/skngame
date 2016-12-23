@@ -10,6 +10,7 @@
 #include <vector>
 using namespace std;
  
+#include "sknwindow.h"
 #include "Terrain.h"
 
 namespace skn_d3d {
@@ -25,6 +26,7 @@ namespace skn_d3d {
 		_cellSpacing = cellSpacing;
 		_heithtScale = heightScale;
 		_numVertices = numVersPerCol*numVersPerRow;
+		//_xlength,_zlength必须是2的倍数，因为有很多地方要除以2
 		_xlength = _numCellsPerRow*_cellSpacing;
 		_zlength = _numCellsPerCol*_cellSpacing;
 		// load heightmap
@@ -71,12 +73,62 @@ namespace skn_d3d {
 		return true;
 	}
 
-	int Terrain::getHeight(int row, int col)
+	int Terrain::getHeightmapEntry(int row, int col)
 	{
 		return _heightMap[row*_numVersPreRow + col];
 	}
 
-	void Terrain::setHeight(int row, int col, int height)
+	float Terrain::getHeight(float x, float z)
+	{
+		x += _xlength / 2.0f;
+		z = _zlength / 2.0f-z;
+		x/= _cellSpacing;
+		z/= _cellSpacing;
+		int col = (int)x;
+		int row = (int)z  ;
+		if (row<0)
+		{
+			row = 0;
+		}
+		if (col<0)
+		{
+			col = 0;
+		}
+		if (row>62)
+		{
+			row = 62;
+		}
+		if (col>62)
+		{
+			col = 62;
+		}
+		//  A   B
+		//  *---*
+		//  | / |
+		//  *---*  
+		//  C   D
+		float a = getHeightmapEntry(row, col);
+		float b= getHeightmapEntry(row, col+1);
+		float c = getHeightmapEntry(row+1, col);
+		float d = getHeightmapEntry(row+1, col+1);
+		float dx = x - col;
+		float  dz = z - row;
+		float height = 0;
+		if (dz<1-dx)
+		{
+			float uy = b - a; // A->B
+			float vy = c - a; // A->C
+			height = a + Learp(0, uy, dx) + Learp(0, vy, dz);
+		}
+		else {
+			float uy = c - d; // D->C
+			float vy = b - d; // D->B
+			height = d + Learp(0, uy, 1-dx) + Learp(0, vy,1- dz);
+		}
+		return height;
+	}
+
+	void Terrain::setHeightmapEntry(int row, int col, int height)
 	{
 		_heightMap[row*_numVersPreRow + col] = height;
 	}
@@ -92,9 +144,10 @@ namespace skn_d3d {
 			_device->SetStreamSource(0, _vertexBuffer, 0, sizeof(TerrainVertex));
 			_device->SetIndices(_indexBuffer);
 			_device->SetFVF(TerrainVertex::FVF);
-			//_device->SetRenderState(D3DRS_LIGHTING, false);
+			_device->SetTexture(0,_tex);
+			_device->SetRenderState(D3DRS_LIGHTING, false);
 			hr=_device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, _numVertices, 0, _numTriangles);
-			//_device->SetRenderState(D3DRS_LIGHTING, true);
+			_device->SetRenderState(D3DRS_LIGHTING, true);
 			if (FAILED(hr))
 			{
 				::MessageBox(0, _T("computeIndices - FAILED"), 0, 0);
@@ -104,6 +157,102 @@ namespace skn_d3d {
 		}
 		
 		return false;
+	}
+
+	float Terrain::computeShade(int cellRow, int cellCol, D3DXVECTOR3* directionToLight)
+	{
+		// get heights of three vertices on the quad
+		float heightA = getHeightmapEntry(cellRow, cellCol);
+		float heightB = getHeightmapEntry(cellRow, cellCol + 1);
+		float heightC = getHeightmapEntry(cellRow + 1, cellCol);
+
+		// build two vectors on the quad
+		D3DXVECTOR3 u(_cellSpacing, heightB - heightA, 0.0f);
+		D3DXVECTOR3 v(0.0f, heightC - heightA, -_cellSpacing);
+
+		// find the normal by taking the cross product of two
+		// vectors on the quad.
+		D3DXVECTOR3 n;
+		D3DXVec3Cross(&n, &u, &v);
+		D3DXVec3Normalize(&n, &n);
+
+		float cosine = D3DXVec3Dot(&n, directionToLight);
+
+		if (cosine < 0.0f)
+			cosine = 0.0f;
+
+		return cosine;
+	}
+
+	bool Terrain::lightTerrain(D3DXVECTOR3 * directionToLight)
+	{
+		HRESULT hr = 0;
+
+		D3DSURFACE_DESC textureDesc;
+		_tex->GetLevelDesc(0 /*level*/, &textureDesc);
+
+		// make sure we got the requested format because our code that fills the
+		// texture is hard coded to a 32 bit pixel depth.
+		if (textureDesc.Format != D3DFMT_A8R8G8B8) {
+		 
+			skn_window::MessageBoxPrintf(_T("lightTerrain - textureDesc.Format =%d"),_T("lightTerrain - textureDesc.Format =%d"),(int)textureDesc.Format);
+			return false;
+		}
+			
+
+		D3DLOCKED_RECT lockedRect;
+		_tex->LockRect(
+			0,          // lock top surface level in mipmap chain
+			&lockedRect,// pointer to receive locked data
+			0,          // lock entire texture image
+			0);         // no lock flags specified
+
+		DWORD* imageData = (DWORD*)lockedRect.pBits;
+		/*int pixPerCellRow = textureDesc.Width / _numCellsPerRow;
+		int pixPerCellCol = textureDesc.Height / _numCellsPerCol;*/
+		skn_window::MessageBoxPrintf(_T("lightTerrain - textureDesc.Format =%d"), _T("lightTerrain - textureDesc.Format =%d"), (int)textureDesc.Height);
+
+		for (int i = 0; i < textureDesc.Height; i++)
+		{
+			
+			for (int j = 0; j < textureDesc.Width; j++)
+			{
+				// index into texture, note we use the pitch and divide by 
+				// four since the pitch is given in bytes and there are 
+				// 4 bytes per DWORD.
+				int index = i * lockedRect.Pitch / 4+ j;
+
+				// get current color of quad
+				D3DXCOLOR c(imageData[index]);
+
+				// shade current quad
+				if (i<63&&j<63)
+				{
+					c *= computeShade(i, j, directionToLight);
+				}
+				
+				 
+				// save shaded color
+				imageData[index] = (D3DCOLOR)c;
+				 
+			}
+			 
+		}
+
+		_tex->UnlockRect(0);
+
+		return true;
+	}
+
+	bool Terrain::loadTexture(TSTRING fileName)
+	{
+		int hr;
+		hr = D3DXCreateTextureFromFile(_device, fileName.c_str(), &_tex);
+		if (FAILED(hr)) {
+			::MessageBox(0, _T("loadTexture - FAILED"), 0, 0);
+			return false;
+		}
+		return true;
 	}
 
 	bool Terrain::buideVertex()
