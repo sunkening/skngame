@@ -6,7 +6,7 @@
 #include <vector>
 #include <tchar.h>   
 #include <stdio.h> 
-
+#include <windows.h>
 
 ////////////////////////////////////
 #include "common.h"

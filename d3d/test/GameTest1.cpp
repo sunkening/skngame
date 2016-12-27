@@ -1,7 +1,7 @@
-
+#include <windows.h>
 #include"../skn3d.h"
-#include "GameTest1.h"
 using namespace skn_d3d;
+#include "GameTest1.h"
 bool GameTest1::setup()
 {
 	IDirect3DDevice9* device = d3dUtil->device;
@@ -622,101 +622,31 @@ void GameTest6::play(float timeDelta)
 	device->Present(0, 0, 0, 0);
 }
 
-
+//ray
 bool GameTest7::setup()
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	std::string fileName = "res/texture/coastMountain64.raw";
-	int _numCellsPerRow = 64 - 1;
-	int _numCellsPerCol = 64 - 1;
-	int _numVersPreRow = 64;
-	int _numVersPerCol = 64;
-	  _numTriangles = _numCellsPerCol*_numCellsPerRow * 2;
-	int _cellSpacing = 10;
-	float _heithtScale = 1;
-	 _numVertices = 64*64;
-	int _xlength = _numCellsPerRow*_cellSpacing;
-	int _zlength = _numCellsPerCol*_cellSpacing;
-	std::vector<byte> in(_numVertices);
-	std::ifstream infile(fileName.c_str(), std::ios_base::binary);
-	if (!infile.is_open())
-	{
-		return false;
-	}
-	infile.read((char*)&in[0], _numVertices);
-	infile.close();
-	std::vector<int> _heightMap;
-	_heightMap.resize(_numVertices);
-	for (int i = 0; i < in.size(); i++)
-	{
-		_heightMap[i] = in[i];
-	}
+	D3DXCreateTeapot(device, &Teapot, 0);
+	BYTE* v_byte = 0;
+	Teapot->LockVertexBuffer(0, (void**)&v_byte);
 
-	int startx = -_xlength / 2, startz = _zlength / 2;
-	int index = 0;
-	float du = 1.0f / _numCellsPerRow;
-	float dv = 1.0f / _numCellsPerCol;
+	D3DXComputeBoundingSphere(
+		(D3DXVECTOR3*)v_byte,
+		Teapot->GetNumVertices(),
+		D3DXGetFVFVertexSize(Teapot->GetFVF()),
+		&BSphere._center,
+		&BSphere._radius);
+	Teapot->UnlockVertexBuffer();
+	//
+	// Build a sphere mesh that describes the teapot's bounding sphere.
+	//
+	D3DXCreateSphere(device, BSphere._radius, 20, 20, &Sphere, 0);
+	//
+	// Set light.
+	//
 
 
-	int hr = d3dUtil->device->CreateVertexBuffer(_numVertices * sizeof(ColorVertex), D3DUSAGE_WRITEONLY, ColorVertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
-	if (FAILED(hr))
-	{
-		::MessageBox(0, _T("CreateVertexBuffer() - FAILED"), 0, 0);
-		return false;
-	}
-	ColorVertex* vertexes;
-	vertexBuffer->Lock(0, 0, (void **)&vertexes, D3DLOCK_DISCARD);
-	/*vertexes[0] = ColorVertex(-1, 0, 1); vertexes[0].color = D3DUtil::BLUE;
-	vertexes[1] = ColorVertex(0, 0, 1); vertexes[1].color = D3DUtil::BLUE;
-	vertexes[2] = ColorVertex(1, 0, 1); vertexes[2].color = D3DUtil::BLUE;
 
-	vertexes[3] = ColorVertex(-1, 0, 0); vertexes[3].color = D3DUtil::GREEN;
-	vertexes[4] = ColorVertex(0, 0, 0); vertexes[4].color = D3DUtil::GREEN;
-	vertexes[5] = ColorVertex(1, 0, 0); vertexes[5].color = D3DUtil::GREEN;
-
-	vertexes[6] = ColorVertex(-1, 0, -1); vertexes[6].color = D3DUtil::RED;
-	vertexes[7] = ColorVertex(0, 0, -1); vertexes[7].color = D3DUtil::RED;
-	vertexes[8] = ColorVertex(1, 0, -1); vertexes[8].color = D3DUtil::RED;*/
-	for (int i = 0; i< _numVersPerCol; i++)
-	{
-		int x = startx;
-		for (int j = 0; j < _numVersPreRow; j++)
-		{
-			vertexes[index] = ColorVertex(x, 0, startz);
-			x += _cellSpacing;
-			index++;
-		}
-		startz += _cellSpacing;
-	}
-	vertexBuffer->Unlock();
-	hr = d3dUtil->device->CreateIndexBuffer(_numTriangles * 3 * sizeof(WORD), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, 0);
-	if (FAILED(hr))
-	{
-		::MessageBox(0, _T("CreateIndexBuffer() - FAILED"), 0, 0);
-		return false;
-	}
-	WORD * indexes;
-	int baseIndex = 0;
-	_numCellsPerCol = 2;
-	_numCellsPerRow = 2;
-	_numVersPreRow = 3;
-	indexBuffer->Lock(0, 0, (void **)&indexes, D3DLOCK_DISCARD);
-	 
-	for (int i = 0; i < _numCellsPerCol; i++)
-	{
-		for (int j = 0; j < _numCellsPerRow; j++)
-		{
-			indexes[baseIndex] = i*_numVersPreRow + j;
-			indexes[baseIndex + 1] = indexes[baseIndex] + 1;
-			indexes[baseIndex + 2] = indexes[baseIndex] + _numVersPreRow;
-
-			indexes[baseIndex + 3] = indexes[baseIndex + 2];
-			indexes[baseIndex + 4] = indexes[baseIndex + 1];
-			indexes[baseIndex + 5] = indexes[baseIndex + 3] + 1;
-			baseIndex += 6;
-		}
-	}
-	indexBuffer->Unlock();
 	D3DXMATRIX   proj;
 	D3DXMatrixPerspectiveFovLH(
 		&proj,
@@ -725,7 +655,7 @@ bool GameTest7::setup()
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 2.0f, -2.0f);
+	D3DXVECTOR3 positon(0.0f, 0.0f, -5.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   v;
@@ -733,16 +663,118 @@ bool GameTest7::setup()
 	device->SetTransform(D3DTS_VIEW, &v);
 	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-	device->SetRenderState(D3DRS_LIGHTING, false);
 
-
+	D3DXVECTOR3 lightdirecton(-1, 0, 0);
+	D3DXVECTOR3 lightPosition(5, 0, 0);
+	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
+	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
+	device->SetLight(0, &light0);
+	device->SetLight(1, &light1);
+	device->LightEnable(0, true);
+	device->LightEnable(1, true);
+	device->SetRenderState(D3DRS_LIGHTING, true);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	const D3DMATERIAL9 YELLOW_MTRL = D3DUtil::InitMaterial(D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::BLACK, 2.0f);
+	const D3DMATERIAL9 BLUE_MTRL = D3DUtil::InitMaterial(D3DUtil::BLUE, D3DUtil::BLUE, D3DUtil::BLUE, D3DUtil::BLACK, 2.0f);
 	return true;
 }
 
 void GameTest7::play(float timeDelta)
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0f, 0);
+	POINT point;
+	GetCursorPos(&point);//获取的是在整个屏幕的位置
+	ScreenToClient(d3dUtil->hwnd, &point);
+	cout << point.x<<"    "<< point.y << endl;
+	//point.y += 31;
+	Ray ray = D3DUtil::CalcPickingRay(device, point.x, point.y);
+ 
+	D3DXMATRIX view;
+	device->GetTransform(D3DTS_VIEW, &view);
+
+	D3DXMATRIX viewInverse;
+	D3DXMatrixInverse(&viewInverse, 0, &view);
+
+	D3DUtil::TransformRay(&ray, &viewInverse);
+	bool pick = false;
+	// test for a hit
+	if (D3DUtil::RaySphereIntTest(&ray, &BSphere))
+		pick = true;
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 255, 255), 1.0f, 0);
+ 
+	// transfrom the bounding sphere to match the teapots position in the
+	// world.
+  
+	device->BeginScene();
+	// Render the teapot.
+	D3DXMATRIX ry, positon;
+	static float y = 0;
+	y += timeDelta;
+	if (y > 6.28f)
+	{
+		y = 0;
+	}
+	D3DXMatrixRotationY(&ry, y);
+	D3DXMatrixTranslation(&positon, 3, 3, 0);
+	BSphere._center.x = 3;
+	BSphere._center.y = 3;
+	BSphere._center.z = 0;
+	device->SetTransform(D3DTS_WORLD, &(ry*positon));
+	D3DMATERIAL9 YELLOW_MTRL = D3DUtil::InitMaterial(D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::BLACK, 2.0f);
+	device->SetMaterial(&YELLOW_MTRL);
+	Teapot->DrawSubset(0);
+	// Render the bounding sphere with alpha blending so we can see 
+	// through it.
+	device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	D3DMATERIAL9 blue = D3DUtil::InitMaterial(D3DUtil::BLUE, D3DUtil::BLUE, D3DUtil::BLUE, D3DUtil::BLACK, 2.0f);
+	blue.Diffuse.a = 0.25f; // 25% opacity
+	device->SetMaterial(&blue);
+	if (pick)
+	{
+		Sphere->DrawSubset(0);
+	}
+	
+	device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	device->EndScene();
+	device->Present(0, 0, 0, 0);
+}
+
+
+bool GameTest8::setup()
+{
+	device = d3dUtil->device;
+	D3DXCreateTeapot(device, &Teapot, 0);
+	initDiffuseShader();
+	//initBlueShader();
+
+
+
+	D3DXMATRIX   proj;
+	D3DXMatrixPerspectiveFovLH(
+		&proj,
+		D3DX_PI * 0.5f, // 90 - degree
+		(float)D3DUtil::screenWidth / (float)D3DUtil::screenHeight,
+		1.0f,
+		1000.0f);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+	D3DXVECTOR3 positon(0.0f, 0.0f, -5.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXMATRIX   v;
+	D3DXMatrixLookAtLH(&v, &positon, &target, &up);
+	device->SetTransform(D3DTS_VIEW, &v);
+	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+	device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+ 
+	return true;
+}
+
+void GameTest8::play(float timeDelta)
+{
+	IDirect3DDevice9* device = d3dUtil->device;
 
 	D3DXMATRIX ry, positon;
 	static float y = 0;
@@ -752,16 +784,183 @@ void GameTest7::play(float timeDelta)
 		y = 0;
 	}
 	D3DXMatrixRotationY(&ry, y);
-	D3DXMatrixTranslation(&positon, 0, 0, 0);
+	D3DXMatrixTranslation(&positon, 0, 2, 0);
+ 
 	device->SetTransform(D3DTS_WORLD, &(ry*positon));
 
-	device->BeginScene();
-	device->SetStreamSource(0, vertexBuffer, 0, sizeof(ColorVertex));
-	device->SetIndices(indexBuffer);
-	device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
-	//	device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
-	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 9, 0, 8);
 
+
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+	device->BeginScene();
+	
+	updateDiffuseShader();
+	//updateBlueShader();
+	Teapot->DrawSubset(0);
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
+}
+
+bool GameTest8::initBlueShader()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	ID3DXBuffer* shader = 0;
+	ID3DXBuffer* errorBuffer = 0;
+	HRESULT hr = 0;
+	hr = D3DXCompileShaderFromFile(
+		TEXT("res/shader/transform.txt"),
+		0,
+		0,
+		"Main",  // entry point function name
+		"vs_1_1",// shader version to compile to
+		D3DXSHADER_DEBUG,
+		&shader,
+		&errorBuffer,
+		&ConstantTable);
+	// output any error messages
+	if (errorBuffer)
+	{
+		::MessageBoxA(0, (char*)errorBuffer->GetBufferPointer(), 0, 0);
+		D3DUtil::Release<ID3DXBuffer*>(errorBuffer);
+	}
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("D3DXCreateEffectFromFile() - FAILED"), 0, 0);
+		return false;
+	}
+
+	hr = device->CreateVertexShader(
+		(DWORD*)shader->GetBufferPointer(),
+		&VertexShader);
+
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("CreateVertexShader - FAILED"), 0, 0);
+		return false;
+	}
+
+	D3DUtil::Release<ID3DXBuffer*>(shader);
+
+	// 
+	// Get Handles.
+	//
+
+	TransformViewProjHandle = ConstantTable->GetConstantByName(0, "ViewProjMatrix");
+
+	//
+	// Set shader constants:
+	//
+
+	ConstantTable->SetDefaults(device);
+}
+
+void GameTest8::updateBlueShader()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	device->SetVertexShader(VertexShader);
+
+	//direct9 从物体到视口有三个变换 世界变换，取景变换（相机变换），投影变换（透视变换）
+	//获取世界变换矩阵
+	D3DXMATRIX world;
+	device->GetTransform(D3DTS_WORLD, &world);
+	//获取取景变换矩阵
+	D3DXMATRIX view;
+	device->GetTransform(D3DTS_VIEW, &view);
+	//获取投影变换矩阵
+	D3DXMATRIX proj;
+	device->GetTransform(D3DTS_PROJECTION, &proj);
+	ConstantTable->SetMatrix(
+		device,
+		TransformViewProjHandle,
+		&(world*view*proj));
+}
+
+bool GameTest8::initDiffuseShader()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	ID3DXBuffer* shader = 0;
+	ID3DXBuffer* errorBuffer = 0;
+	HRESULT hr = 0;
+	 
+	hr = D3DXCompileShaderFromFile(
+		TEXT("res/shader/diffuse.txt"),
+		0,
+		0,
+		"Main",  // entry point function name
+		"vs_1_1",// shader version to compile to
+		D3DXSHADER_DEBUG,//  | D3DXSHADER_ENABLE_BACKWARDS_COMPATIBILITY
+		&shader,
+		&errorBuffer,
+		&ConstantTable);
+	// output any error messages
+	if (errorBuffer)
+	{
+		::MessageBoxA(0, (char*)errorBuffer->GetBufferPointer(), 0, 0);
+		cout <<(char*) errorBuffer->GetBufferPointer() << endl;
+		D3DUtil::Release<ID3DXBuffer*>(errorBuffer);
+	}
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("D3DXCreateEffectFromFile() - FAILED"), 0, 0);
+		return false;
+	}
+
+	hr = device->CreateVertexShader(
+		(DWORD*)shader->GetBufferPointer(),
+		&VertexShader);
+
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("CreateVertexShader - FAILED"), 0, 0);
+		return false;
+	}
+
+	D3DUtil::Release<ID3DXBuffer*>(shader);
+	D3DXHANDLE ViewMatrixHandle = ConstantTable->GetConstantByName(0, "ViewMatrix");
+	D3DXHANDLE ViewProjMatrixHandle = ConstantTable->GetConstantByName(0, "ViewProjMatrix");
+	D3DXHANDLE AmbientMtrlHandle = ConstantTable->GetConstantByName(0, "AmbientMtrl");
+	D3DXHANDLE DiffuseMtrlHandle = ConstantTable->GetConstantByName(0, "DiffuseMtrl");
+	D3DXHANDLE LightDirHandle = ConstantTable->GetConstantByName(0, "LightDirection");
+	//
+	// Set shader constants:
+	//
+
+	// Light direction:
+	D3DXVECTOR4 directionToLight(-0.57f, 0.57f, -0.57f, 0.0f);
+	ConstantTable->SetVector(device, LightDirHandle, &directionToLight);
+
+	// Materials:
+	D3DXVECTOR4 ambientMtrl(0.0f, 0.0f, 1.0f, 1.0f);
+	D3DXVECTOR4 diffuseMtrl(0.0f, 0.0f, 1.0f, 1.0f);
+
+	ConstantTable->SetVector(device, AmbientMtrlHandle, &ambientMtrl);
+	ConstantTable->SetVector(device, DiffuseMtrlHandle, &diffuseMtrl);
+	ConstantTable->SetDefaults(device);
+
+	return true;
+}
+
+void GameTest8::updateDiffuseShader()
+{
+	D3DXHANDLE ViewMatrixHandle = ConstantTable->GetConstantByName(0, "ViewMatrix");
+	D3DXHANDLE ViewProjMatrixHandle = ConstantTable->GetConstantByName(0, "ViewProjMatrix");
+	D3DXHANDLE LightDirHandle = ConstantTable->GetConstantByName(0, "LightDirection");
+	D3DXVECTOR4 directionToLight(-0.57f, 0.57f, -0.57f, 0.0f);
+	 
+ 
+	//获取世界变换矩阵
+	D3DXMATRIX world;
+	device->GetTransform(D3DTS_WORLD, &world);
+	//获取取景变换矩阵
+	D3DXMATRIX view;
+	device->GetTransform(D3DTS_VIEW, &view);
+	D3DXVec4Transform(&directionToLight, &directionToLight, &view);
+	//获取投影变换矩阵
+	D3DXMATRIX proj;
+	device->GetTransform(D3DTS_PROJECTION, &proj);
+	ConstantTable->SetMatrix(device, ViewMatrixHandle, &view);
+	D3DXMATRIX ViewProj = view * proj;
+	ConstantTable->SetMatrix(device, ViewProjMatrixHandle, &ViewProj);
+	ConstantTable->SetVector(device, LightDirHandle, &directionToLight);
+	device->SetVertexShader(VertexShader);
+	
 }

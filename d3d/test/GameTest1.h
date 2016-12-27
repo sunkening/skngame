@@ -58,7 +58,7 @@ public:
 	//IDirect3DIndexBuffer9* indexBuffer;
 	virtual void play(float timeDelta) override;
 };
-//terrain
+//terrain  particle
 class GameTest6 :public skn_d3d::GameMain
 {
 
@@ -72,18 +72,32 @@ public:
 	virtual void play(float timeDelta) override;
 };
 
-//particle
+//pick
 class GameTest7 :public skn_d3d::GameMain
 {
 
 public:
-	skn_d3d::Terrain *terrain;
-	IDirect3DVertexBuffer9 *vertexBuffer;
-	IDirect3DIndexBuffer9* indexBuffer;
-	int _numTriangles;
-	int _numVertices;
+	ID3DXMesh* Teapot = 0;
+	ID3DXMesh* Sphere = 0;
+	skn_d3d::BoundingSphere BSphere;
 	virtual bool setup() override;
 	//IDirect3DVertexBuffer9 *vertexBuffer;
 	//IDirect3DIndexBuffer9* indexBuffer;
 	virtual void play(float timeDelta) override;
+};
+//shader
+class GameTest8 :public skn_d3d::GameMain
+{
+public:
+	IDirect3DDevice9* device;
+	ID3DXMesh* Teapot = 0;
+	IDirect3DVertexShader9* VertexShader = 0;
+	ID3DXConstantTable* ConstantTable = 0;
+	D3DXHANDLE TransformViewProjHandle = 0;
+	virtual bool setup() override;
+	virtual void play(float timeDelta) override;
+	bool initBlueShader();
+	void updateBlueShader();
+	bool initDiffuseShader();
+	void updateDiffuseShader();
 };

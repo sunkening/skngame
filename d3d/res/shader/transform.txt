@@ -1,0 +1,54 @@
+matrix ViewMatrix;
+
+vector AmbientMtrl;
+vector DiffuseMtrl;
+
+vector LightDirection;
+
+vector DiffuseLightIntensity;
+vector AmbientLightIntensity;
+
+
+
+
+matrix ViewProjMatrix;
+
+vector Blue = {0.0f, 0.0f, 1.0f, 1.0f};
+struct VS_INPUT
+{
+    vector position : POSITION;
+    vector normal   : NORMAL;
+};
+
+struct VS_OUTPUT
+{
+    vector position : POSITION;
+    vector diffuse  : COLOR;
+};
+
+ 
+ 
+
+//
+// Main Entry Point, observe the main function 
+// receives a copy of the input vertex through
+// its parameter and returns a copy of the output
+// vertex it computes.
+//
+
+VS_OUTPUT Main(VS_INPUT input)
+{
+    // zero out members of output
+    VS_OUTPUT output = (VS_OUTPUT)0;
+  output.position = mul(input.position, ViewProjMatrix);
+ 
+    // set vertex diffuse color to blue
+    output.diffuse = Blue;
+
+    return output;
+}
+
+
+
+
+

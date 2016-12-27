@@ -2,6 +2,10 @@
 
 #include<d3d9.h>
 #include<d3dx9.h>
+#include <dinput.h>
+
+
+#include "Input.h"
 #include"D3DUtil.h"
 #include "GameMain.h"
 #include <iostream>
@@ -34,6 +38,7 @@ namespace skn_d3d {
 
 		static float lastTime = (float)timeGetTime();
 		game->setup();
+		
 		while (msg.message != WM_QUIT)
 		{
 			if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -43,6 +48,7 @@ namespace skn_d3d {
 			}
 			else
 			{
+				Input::getInputState();
 				float currTime = (float)timeGetTime();
 				float timeDelta = (currTime - lastTime)*0.001f;
 				game->play(timeDelta);
