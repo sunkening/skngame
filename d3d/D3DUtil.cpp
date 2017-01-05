@@ -319,8 +319,8 @@ namespace skn_d3d {
 	const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1;
 	//D3DFVF_DIFFUSE不能和D3DFVF_NORMAL等其他一起使用，否则颜色会不正常，为何？
 	//const DWORD Vertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1;D3DFVF_DIFFUSE
-	const DWORD ColorVertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
-
+	const DWORD ColorVertex::FVF = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+	const DWORD MultiTexVertex::FVF = D3DFVF_XYZ | D3DFVF_TEX3;
 	float D3DUtil::GetRandomFloat(float lowBound, float highBound)
 	{
 		if (lowBound >= highBound) // bad input

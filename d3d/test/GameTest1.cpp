@@ -5,19 +5,24 @@ using namespace skn_d3d;
 bool GameTest1::setup()
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	int hr = d3dUtil->device->CreateVertexBuffer(5 * sizeof(Vertex), D3DUSAGE_WRITEONLY, Vertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
+	int hr = d3dUtil->device->CreateVertexBuffer(5 * sizeof(ColorVertex), D3DUSAGE_WRITEONLY, ColorVertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
 	if (FAILED(hr))
 	{
 		::MessageBox(0, _T("CreateVertexBuffer() - FAILED"), 0, 0);
 		return false;
 	}
-	Vertex* vertexes;
+	ColorVertex* vertexes;
 	vertexBuffer->Lock(0, 0, (void **)&vertexes, D3DLOCK_DISCARD);
-	vertexes[0] = Vertex(0, 0, 0); //vertexes[0].color = D3DUtil::BLUE;
-	vertexes[1] = Vertex(0, -3, 3);// vertexes[1].color = D3DUtil::CYAN;
-	vertexes[2] = Vertex(3, -3, 0); //vertexes[2].color = D3DUtil::RED;
-	vertexes[3] = Vertex(0, -3, -3);// vertexes[3].color = D3DUtil::GREEN;
-	vertexes[4] = Vertex(-3, -3, 0);// vertexes[4].color = D3DUtil::YELLOW;
+	vertexes[0] = ColorVertex(0, 0, 0); vertexes[0].color = D3DUtil::BLUE;
+	vertexes[1] = ColorVertex(0, -3, 3); vertexes[1].color = D3DUtil::CYAN;
+	vertexes[2] = ColorVertex(3, -3, 0); vertexes[2].color = D3DUtil::RED;
+	vertexes[3] = ColorVertex(0, -3, -3); vertexes[3].color = D3DUtil::GREEN;
+	vertexes[4] = ColorVertex(-3, -3, 0); vertexes[4].color = D3DUtil::YELLOW;
+	vertexes[0]._u = 0; vertexes[0]._v = 0;
+	vertexes[1]._u = 0; vertexes[0]._v =1;
+	vertexes[2]._u = 1; vertexes[0]._v = 1;
+	vertexes[3]._u = 0; vertexes[0]._v = 1;
+	vertexes[4]._u = 1; vertexes[0]._v = 1;
 	vertexBuffer->Unlock();
 
 	hr = d3dUtil->device->CreateIndexBuffer(12 * sizeof(WORD), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, 0);
@@ -26,6 +31,9 @@ bool GameTest1::setup()
 		::MessageBox(0, _T("CreateIndexBuffer() - FAILED"), 0, 0);
 		return false;
 	}
+	IDirect3DTexture9* shadetex;
+	D3DXCreateTextureFromFile(device, TEXT("res/texture/toonshade.bmp"), &shadetex);
+	device->SetTexture(0, shadetex);
 	WORD * indexes;
 	indexBuffer->Lock(0, 0, (void **)&indexes, D3DLOCK_DISCARD);
 	indexes[0] = 0;
@@ -82,9 +90,9 @@ void GameTest1::play(float timeDelta)
 	device->SetTransform(D3DTS_WORLD, & (ry*positon));
 
 	device->BeginScene();
-	device->SetStreamSource(0, vertexBuffer, 0, sizeof(Vertex));
+	device->SetStreamSource(0, vertexBuffer, 0, sizeof(ColorVertex));
 	device->SetIndices(indexBuffer);
-	device->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+	device->SetFVF(ColorVertex::FVF);
 //	device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
 	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0,0,5,0,4);
 
@@ -428,7 +436,6 @@ void GameTest4::play(float timeDelta)
 bool GameTest5::setup()
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-	terrain = new skn_d3d::Terrain(device, "res/texture/coastMountain64.raw", 64, 64, 10, 0.5f);
 	ID3DXBuffer * adjBuffer;
 	ID3DXBuffer * materialBuffer;
 	DWORD mtrlNum;
@@ -516,7 +523,7 @@ void GameTest5::play(float timeDelta)
 		device->SetTexture(0, textures[i]);
 		mesh->DrawSubset(i);
 	}
-	terrain->draw(0, 0, 0, false);
+	//terrain->draw(0, 0, 0, false);
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
 }
@@ -746,9 +753,9 @@ bool GameTest8::setup()
 {
 	device = d3dUtil->device;
 	D3DXCreateTeapot(device, &Teapot, 0);
-	initDiffuseShader();
+	//initDiffuseShader();
 	//initBlueShader();
-
+	initToonShader();
 
 
 	D3DXMATRIX   proj;
@@ -759,14 +766,14 @@ bool GameTest8::setup()
 		1.0f,
 		1000.0f);
 	device->SetTransform(D3DTS_PROJECTION, &proj);
-	D3DXVECTOR3 positon(0.0f, 0.0f, -5.0f);
+	D3DXVECTOR3 positon(0.0f, 0.0f, -3.0f);
 	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 	D3DXMATRIX   v;
 	D3DXMatrixLookAtLH(&v, &positon, &target, &up);
 	device->SetTransform(D3DTS_VIEW, &v);
 	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-	device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	//device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 	//device->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
  
 	return true;
@@ -775,7 +782,6 @@ bool GameTest8::setup()
 void GameTest8::play(float timeDelta)
 {
 	IDirect3DDevice9* device = d3dUtil->device;
-
 	D3DXMATRIX ry, positon;
 	static float y = 0;
 	y += timeDelta;
@@ -784,17 +790,14 @@ void GameTest8::play(float timeDelta)
 		y = 0;
 	}
 	D3DXMatrixRotationY(&ry, y);
-	D3DXMatrixTranslation(&positon, 0, 2, 0);
- 
+	D3DXMatrixTranslation(&positon, 0, -1, 0);
 	device->SetTransform(D3DTS_WORLD, &(ry*positon));
-
-
-
-	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 255, 255), 1.0f, 0);
 	device->BeginScene();
-	
-	updateDiffuseShader();
+	updateToonShader();
+	//updateDiffuseShader();
 	//updateBlueShader();
+	
 	Teapot->DrawSubset(0);
 	device->EndScene();
 	device->Present(0, 0, 0, 0);
@@ -963,4 +966,306 @@ void GameTest8::updateDiffuseShader()
 	ConstantTable->SetVector(device, LightDirHandle, &directionToLight);
 	device->SetVertexShader(VertexShader);
 	
+}
+
+bool GameTest8::initToonShader()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	ID3DXBuffer* shader = 0;
+	ID3DXBuffer* errorBuffer = 0;
+	HRESULT hr = 0;
+
+	hr = D3DXCompileShaderFromFile(
+		TEXT("res/shader/toon.txt"),
+		0,
+		0,
+		"Main",  // entry point function name
+		"vs_1_1",// shader version to compile to
+		D3DXSHADER_DEBUG,//  | D3DXSHADER_ENABLE_BACKWARDS_COMPATIBILITY
+		&shader,
+		&errorBuffer,
+		&ConstantTable);
+	// output any error messages
+	if (errorBuffer)
+	{
+		::MessageBoxA(0, (char*)errorBuffer->GetBufferPointer(), 0, 0);
+		cout << (char*)errorBuffer->GetBufferPointer() << endl;
+		D3DUtil::Release<ID3DXBuffer*>(errorBuffer);
+	}
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("D3DXCreateEffectFromFile() - FAILED"), 0, 0);
+		return false;
+	}
+
+	hr = device->CreateVertexShader(
+		(DWORD*)shader->GetBufferPointer(),
+		&VertexShader);
+
+	if (FAILED(hr))
+	{
+		::MessageBox(0, TEXT("CreateVertexShader - FAILED"), 0, 0);
+		return false;
+	}
+	D3DUtil::Release<ID3DXBuffer*>(shader);
+	IDirect3DTexture9* shadetex;
+	D3DXCreateTextureFromFile(device, TEXT("res/texture/toonshade.bmp"), &shadetex);
+	device->SetTexture(0, shadetex);
+	D3DMATERIAL9 YELLOW_MTRL = D3DUtil::InitMaterial(D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::YELLOW, D3DUtil::BLACK, 2.0f);
+	device->SetMaterial(&YELLOW_MTRL);
+	//device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+	//device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+	//device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+	device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	device->SetRenderState(D3DRS_LIGHTING, false);
+	D3DXVECTOR3 lightdirecton(-1, 0, 0);
+	D3DXVECTOR3 lightPosition(5, 0, 0);
+	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
+	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
+	device->SetLight(0, &light0);
+	device->SetLight(1, &light1);
+	device->LightEnable(0, true);
+	device->LightEnable(1, true);
+	//device->SetRenderState(D3DRS_LIGHTING, false);
+	/*device->SetRenderState(D3DRS_LIGHTING, true);
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);*/
+	ConstantTable->SetDefaults(device);
+	return true;
+}
+
+void GameTest8::updateToonShader()
+{
+	D3DXMATRIX world;
+	device->GetTransform(D3DTS_WORLD, &world);
+	D3DXMATRIX view;
+	device->GetTransform(D3DTS_VIEW, &view);
+	D3DXMATRIX proj;
+	device->GetTransform(D3DTS_PROJECTION, &proj);
+	D3DXHANDLE WorldViewHandle = ConstantTable->GetConstantByName(0, "WorldViewMatrix");
+	D3DXHANDLE WorldViewProjHandle = ConstantTable->GetConstantByName(0, "WorldViewProjMatrix");
+	D3DXHANDLE LightDirHandle = ConstantTable->GetConstantByName(0, "LightDirection");
+	D3DXMATRIX  WorldView = world * view;
+	D3DXMATRIX WorldViewProj = world * view * proj;
+	D3DXVECTOR4 directionToLight(-0.57f, 0.57f, -0.57f, 0.0f);
+	//D3DXVec4Transform(&directionToLight, &directionToLight, &WorldView);
+	ConstantTable->SetMatrix(
+		device,
+		WorldViewHandle,
+		&WorldView);
+	ConstantTable->SetMatrix(
+		device,
+		WorldViewProjHandle,
+		&WorldViewProj);
+	ConstantTable->SetVector(
+		device,
+		LightDirHandle,
+		&directionToLight);
+	//ConstantTable->SetVector(
+	//	device,
+	//	ColorHandle,
+	//	&MeshColors[i]);
+	device->SetVertexShader(VertexShader);
+}
+
+
+bool GameTest9::setup()
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	int hr = d3dUtil->device->CreateVertexBuffer(5 * sizeof(MultiTexVertex), D3DUSAGE_WRITEONLY, MultiTexVertex::FVF, D3DPOOL_MANAGED, &vertexBuffer, 0);
+	if (FAILED(hr))
+	{
+		::MessageBox(0, _T("CreateVertexBuffer() - FAILED"), 0, 0);
+		return false;
+	}
+	MultiTexVertex* vertexes;
+	vertexBuffer->Lock(0, 0, (void **)&vertexes, D3DLOCK_DISCARD);
+	vertexes[0] = MultiTexVertex(0, 0, 0,  
+		0.5f, 0.0f, 0.5f, 0.0f, 0.5f, 0.0f);
+	vertexes[1] = MultiTexVertex(0, -3, 3,
+		0.0f,1.0f, 0.0f, 1.0f, 0.0f, 1.0f);
+	vertexes[2] = MultiTexVertex(3, -3, 0, 
+		0.33f, 1.0f, 0.33f, 1.0f, 0.33f, 1.0f);
+	vertexes[3] = MultiTexVertex(0, -3, -3,
+		0.66f,1.0f, 0.66f, 1.0f, 0.66f, 1.0f);
+	vertexes[4] = MultiTexVertex(-3, -3, 0,
+		1.0f,1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	vertexBuffer->Unlock();
+	hr = d3dUtil->device->CreateIndexBuffer(12 * sizeof(WORD), D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_MANAGED, &indexBuffer, 0);
+	if (FAILED(hr))
+	{
+		::MessageBox(0, _T("CreateIndexBuffer() - FAILED"), 0, 0);
+		return false;
+	}
+	WORD * indexes;
+	indexBuffer->Lock(0, 0, (void **)&indexes, D3DLOCK_DISCARD);
+	indexes[0] = 0;
+	indexes[1] = 1;
+	indexes[2] = 2;
+
+	indexes[3] = 0;
+	indexes[4] = 2;
+	indexes[5] = 3;
+
+	indexes[6] = 0;
+	indexes[7] = 3;
+	indexes[8] = 4;
+	indexes[9] = 0;
+	indexes[10] = 4;
+	indexes[11] = 1;
+	indexBuffer->Unlock();
+
+	D3DXMATRIX   proj;
+	D3DXMatrixPerspectiveFovLH(
+		&proj,
+		D3DX_PI * 0.5f, // 90 - degree
+		(float)800 / (float)600,
+		1.0f,
+		1000.0f);
+	device->SetTransform(D3DTS_PROJECTION, &proj);
+	D3DXVECTOR3 positon(0.0f, 0.0f, -5.0f);
+	D3DXVECTOR3 target(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXMATRIX   view;
+	D3DXMatrixLookAtLH(&view, &positon, &target, &up);
+	device->SetTransform(D3DTS_VIEW, &view);
+
+	D3DMATERIAL9 material = D3DUtil::InitMaterial(D3DUtil::WHITE, 0.3f, 1);
+	material.Diffuse.a = 0.5f;
+	device->SetMaterial(&material);
+	IDirect3DTexture9 *texture = d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
+	device->SetTexture(0, texture);
+	D3DXVECTOR3 lightdirecton(-1, 0, 0);
+	D3DXVECTOR3 lightPosition(5, 0, 0);
+	D3DLIGHT9 light0 = D3DUtil::InitDirectionLight(lightdirecton, D3DUtil::WHITE);
+	D3DLIGHT9 light1 = D3DUtil::InitPointLight(lightPosition, D3DUtil::RED);
+	device->SetLight(0, &light0);
+	device->SetLight(1, &light1);
+	device->LightEnable(0, true);
+	device->LightEnable(1, true);
+	//device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+	device->SetRenderState(D3DRS_LIGHTING, false);//默认是启用的
+	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+	device->SetRenderState(D3DRS_SPECULARENABLE, true);
+	// use alpha in material's diffuse component for alpha
+	//	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+	device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+	//device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
+	// set blending factors so that alpha component determines transparency
+	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	ID3DXBuffer* shader = 0;
+	ID3DXBuffer* errorBuffer = 0;
+
+	hr = D3DXCompileShaderFromFile(
+		TEXT("res/shader/ps_multitex.txt"),
+		0,
+		0,
+		"Main", // entry point function name
+		"ps_2_0",
+		D3DXSHADER_DEBUG,
+		&shader,
+		&errorBuffer,
+		&ConstantTable);
+
+	// output any error messages
+	if (errorBuffer)
+	{
+		::MessageBoxA(0, (char*)errorBuffer->GetBufferPointer(), 0, 0);
+		D3DUtil::Release<ID3DXBuffer*>(errorBuffer);
+	}
+
+	if (FAILED(hr))
+	{
+		::MessageBoxA(0, "D3DXCompileShaderFromFile() - FAILED", 0, 0);
+		return false;
+	}
+
+	//
+	// Create Pixel Shader
+	//
+	hr = device->CreatePixelShader(
+		(DWORD*)shader->GetBufferPointer(),
+		&PixelShader);
+
+	if (FAILED(hr))
+	{
+		::MessageBoxA(0, "CreateVertexShader - FAILED", 0, 0);
+		return false;
+	}
+
+	D3DUtil::Release<ID3DXBuffer*>(shader);
+
+	//
+	// Load textures.
+	//
+	IDirect3DTexture9 *BaseTex = d3dUtil->LoadTexture(TEXT("res/texture/wall.png"));
+	IDirect3DTexture9 *SpotLightTex = d3dUtil->LoadTexture(TEXT("res/texture/spotlight.bmp"));
+	IDirect3DTexture9 *StringTex = d3dUtil->LoadTexture(TEXT("res/texture/text.bmp"));
+	D3DXHANDLE BaseTexHandle = 0;
+	D3DXHANDLE SpotLightTexHandle = 0;
+	D3DXHANDLE StringTexHandle = 0;
+	BaseTexHandle = ConstantTable->GetConstantByName(0, "BaseTex");
+	SpotLightTexHandle = ConstantTable->GetConstantByName(0, "SpotLightTex");
+	StringTexHandle = ConstantTable->GetConstantByName(0, "StringTex");
+	D3DXCONSTANT_DESC BaseTexDesc;
+	D3DXCONSTANT_DESC SpotLightTexDesc;
+	D3DXCONSTANT_DESC StringTexDesc;
+	UINT count;
+
+	ConstantTable->GetConstantDesc(BaseTexHandle, &BaseTexDesc, &count);
+	ConstantTable->GetConstantDesc(SpotLightTexHandle, &SpotLightTexDesc, &count);
+	ConstantTable->GetConstantDesc(StringTexHandle, &StringTexDesc, &count);
+	// base tex
+	device->SetTexture(BaseTexDesc.RegisterIndex, BaseTex);
+	device->SetSamplerState(BaseTexDesc.RegisterIndex, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(BaseTexDesc.RegisterIndex, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(BaseTexDesc.RegisterIndex, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+	// spotlight tex
+	device->SetTexture(SpotLightTexDesc.RegisterIndex, SpotLightTex);
+	device->SetSamplerState(SpotLightTexDesc.RegisterIndex, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(SpotLightTexDesc.RegisterIndex, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(SpotLightTexDesc.RegisterIndex, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
+	// string tex
+	device->SetTexture(StringTexDesc.RegisterIndex, StringTex);
+	device->SetSamplerState(StringTexDesc.RegisterIndex, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(StringTexDesc.RegisterIndex, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	device->SetSamplerState(StringTexDesc.RegisterIndex, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	ConstantTable->SetDefaults(device);
+	device->SetPixelShader(PixelShader);
+	return true;
+}
+
+void GameTest9::play(float timeDelta)
+{
+	IDirect3DDevice9* device = d3dUtil->device;
+	device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+
+	D3DXMATRIX ry, positon, positon2;
+	static float y = 0;
+	y += timeDelta;
+	if (y > 6.28f)
+	{
+		y = 0;
+	}
+	D3DXMatrixRotationY(&ry, y);
+	D3DXMatrixTranslation(&positon, 0, 1, 2);
+	device->SetTransform(D3DTS_WORLD, &(ry*positon));
+
+	device->BeginScene();
+	device->SetStreamSource(0, vertexBuffer, 0, sizeof(MultiTexVertex));
+	device->SetIndices(indexBuffer);
+	device->SetFVF(MultiTexVertex::FVF);
+	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 5, 0, 4);
+
+	device->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
+
+	D3DXMatrixTranslation(&positon2, 1, 0, -1);
+	device->SetTransform(D3DTS_WORLD, &(ry*positon*positon2));
+	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 5, 0, 4);
+	device->SetRenderState(D3DRS_ALPHABLENDENABLE, false);
+	device->EndScene();
+	device->Present(0, 0, 0, 0);
 }

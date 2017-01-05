@@ -85,7 +85,7 @@ public:
 	//IDirect3DIndexBuffer9* indexBuffer;
 	virtual void play(float timeDelta) override;
 };
-//shader
+//vertex shader
 class GameTest8 :public skn_d3d::GameMain
 {
 public:
@@ -100,4 +100,19 @@ public:
 	void updateBlueShader();
 	bool initDiffuseShader();
 	void updateDiffuseShader();
+	bool initToonShader();
+	void updateToonShader();
+};
+//pixel shader
+class GameTest9 :public skn_d3d::GameMain
+{
+public:
+	IDirect3DVertexBuffer9* vertexBuffer;
+	IDirect3DIndexBuffer9* indexBuffer;
+	IDirect3DDevice9* device;
+	IDirect3DPixelShader9* PixelShader = 0;
+	ID3DXConstantTable* ConstantTable = 0;
+	D3DXHANDLE TransformViewProjHandle = 0;
+	virtual bool setup() override;
+	virtual void play(float timeDelta) override;
 };
