@@ -116,3 +116,15 @@ public:
 	virtual bool setup() override;
 	virtual void play(float timeDelta) override;
 };
+//pixel shader
+class GameTest10 :public skn_d3d::GameMain
+{
+public:
+	IDirect3DVertexBuffer9* vertexBuffer;
+	IDirect3DIndexBuffer9* indexBuffer;
+	IDirect3DDevice9* device;
+	ID3DXEffect* LightTexEffect  ;
+	ID3DXMesh* Teapot = 0;
+	virtual bool setup() override;
+	virtual void play(float timeDelta) override;
+};
